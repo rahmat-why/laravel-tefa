@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReparationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\PendingController;
 use App\Http\Controllers\RaparationController;
-
-
+use App\Http\Controllers\InspectionListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,11 +89,27 @@ Route::middleware('auth:ms_users')->group(function () {
 
     Route::get('/temuan/{id_booking}/{id_vehicle}', [RaparationController::class, 'inden'])->name('inden.form');
     Route::post('/pending', [RaparationController::class, 'indenstore'])->name('inden.store');
+});
 
+Route::middleware('auth:ms_users')->group(function () {
+    Route::get('reparation/index/{idBooking}', [ReparationController::class, 'index'])->name('reparation.index');
+    Route::get('reparation/form-plan/{idBooking}', [ReparationController::class, 'formPlan'])->name('reparation.form-plan');
+    Route::post('reparation/process-form-plan', [ReparationController::class, 'processFormPlan'])->name('reparation.process-form-plan');
+    Route::get('reparation/form-decision/{idBooking}', [ReparationController::class, 'formDecision'])->name('reparation.form-decision');
+    Route::post('reparation/post-form-decision', [ReparationController::class, 'postFormDecision'])->name('reparation.post-form-decision');
+    Route::get('reparation/form-finish-execution/{idBooking}', [ReparationController::class, 'formFinishExecution'])->name('reparation.form-finish-execution');
+    Route::post('reparation/post-form-finish-execution', [ReparationController::class, 'postFormFinishExecution'])->name('reparation.post-form-finish-execution');
+    Route::get('reparation/form-control/{idBooking}', [ReparationController::class, 'formControl'])->name('reparation.form-control');
+    Route::post('reparation/post-form-control', [ReparationController::class, 'postFormControl'])->name('reparation.post-form-control');
+    Route::get('reparation/form-evaluation/{idBooking}', [ReparationController::class, 'formEvaluation'])->name('reparation.form-evaluation');
+    Route::post('reparation/post-form-evaluation', [ReparationController::class, 'postFormEvaluation'])->name('reparation.post-form-evaluation');
+    Route::get('reparation/form-indent/{idBooking}', [ReparationController::class, 'formIndent'])->name('reparation.form-indent');
+    Route::post('reparation/post-form-indent', [ReparationController::class, 'postFormIndent'])->name('reparation.post-form-indent');
+    Route::get('reparation/form-special-handling/{idBooking}', [ReparationController::class, 'formSpecialHandling'])->name('reparation.form-special-handling');
+    Route::post('reparation/post-form-special-handling', [ReparationController::class, 'postFormSpecialHandling'])->name('reparation.post-form-special-handling');
+});
 
-
-Route::get('/reparation/formindent/{id_booking}', [RaparationController::class, 'formIndent'])->name('reparation.formindent');
-Route::put('/reparation/formindent/{id_booking}', [RaparationController::class, 'formIndentPost'])->name('reparation.formindent.post');
-
-  
+Route::middleware('auth:ms_users')->group(function () {
+    Route::get('inspection_list/index/{idBooking}', [InspectionListController::class, 'index'])->name('inspection_list.index');
+    Route::post('inspection_list/create', [InspectionListController::class, 'create'])->name('inspection_list.create');
 });
