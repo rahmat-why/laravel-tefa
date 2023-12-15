@@ -28,11 +28,12 @@
                     <i class="ti ti-x fs-8"></i>
                 </div>
             </div>
+            <div class ="text-center"><b>{{ auth()->user()->full_name }}-SERVICE ADVISOR</b></div>
             <!-- Sidebar navigation-->
             <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
             <ul id="sidebarnav">
                 <li class="sidebar-item">
-                    <a class="sidebar-link" asp-controller="Booking" asp-action="History" aria-expanded="false">
+                    <a class="sidebar-link" href="{{ route('booking.history.form') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-layout-dashboard"></i>
                         </span>
@@ -40,7 +41,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" asp-controller="Booking" asp-action="Servis" aria-expanded="false">
+                    <a class="sidebar-link" href="{{ route('booking.progres.form') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-article"></i>
                         </span>
@@ -48,7 +49,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" asp-controller="Booking" asp-action="Report" aria-expanded="false">
+                <a class="sidebar-link" href="{{ route('booking.report.form') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-alert-circle"></i>
                         </span>

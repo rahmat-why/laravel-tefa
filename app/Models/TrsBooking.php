@@ -12,8 +12,9 @@ class TrsBooking extends Model
     protected $table = 'trs_booking';
     protected $primaryKey = 'id_booking';
     public $incrementing = false;
+    public $timestamps = false;
     protected $keyType = 'string';
-
+    
     protected $fillable = [
         'id_booking',
         'order_date',
@@ -34,6 +35,9 @@ class TrsBooking extends Model
         'repair_method',
         'control',
         'progress',
+        'additional_replacement_part',
+        'additional_price',
+        'decision',
     ];
 
     protected $dates = [
@@ -43,7 +47,7 @@ class TrsBooking extends Model
         'finish_estimation_time',
         'created_time',
     ];
-
+    
     public function idVehicleNavigation()
     {
         return $this->belongsTo(MsVehicle::class, 'id_vehicle');
@@ -62,5 +66,10 @@ class TrsBooking extends Model
     public function trsInspectionLists()
     {
         return $this->hasMany(TrsInspectionList::class, 'id_booking');
+    }
+
+    public function trsPendings()
+    {
+        return $this->hasMany(TrsPending::class, 'IdBooking', 'IdBooking');
     }
 }

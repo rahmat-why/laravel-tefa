@@ -8,7 +8,7 @@
             <tr>
                 <th>Nama Customer</th>
                 <th>Tanggal Booking</th>
-                <th>Merk</th>
+             <th>Merk</th>
                 <th>No.Polisi</th>
                 <th>Odometer</th>
                 <th>Keluhan</th>
@@ -18,23 +18,80 @@
         </thead>
         <tbody>
         @foreach ($bookings as $booking)
-            <tr>
+            @php
+            $background_color = '';
+                if ($booking->repair_status == 'MENUNGGU') {
+                    if ($booking->repair_method == 'TEFA'){
+                        $background_color = 'background-color: yellow;';
+                    }else{
+                        $background_color = 'background-color: red;';
+                    }
+                }else{
+                    $background_color = 'background-color: white;';
+                }
+            @endphp
+            
+            <tr style="{{ $background_color }}">
                 <td>
-                    {{ optional(optional($booking->id_vehicle_navigation)->id_customer_navigation)->name ?? 'N/A' }}
+                    {{ optional(optional($booking->idVehicleNavigation)->idCustomerNavigation)->name ?? 'N/A' }}
+                    <a class="btn btn-outline-success btn-sm"
+                    data-phone="{{ optional($booking->idVehicleNavigation)->idCustomerNavigation->phone }}"
+                    onclick="copyPhone(this)" data-toggle="tooltip" data-placement="top" title="Salin nomor whatsapp">
+                        <i class="ti ti-brand-whatsapp"></i>
+                    </a>
                 </td>
                 <td>
                     {{ optional($booking->order_date)->format('d F Y') }}
                 </td>
-                <td>{{ optional(optional($booking->id_vehicle_navigation)->type)->__toString() ?? 'N/A' }}</td>
-                <td>{{ optional(optional($booking->id_vehicle_navigation)->police_number)->__toString() ?? 'N/A' }}</td>
+                <td>
+                    {{ optional(optional($booking->idVehicleNavigation))->type ?? 'N/A' }}
+                    <a class="btn btn-outline-primary btn-sm" href="{{ route('vehicles.history', ['id' => $booking->id_vehicle]) }}" data-toggle="tooltip" data-placement="top" title="Lihat riwayat kendaraan">
+                        <i class="ti ti-history"></i>
+                    </a>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ route('Pending.index', ['id_booking' => $booking->id_booking]) }}" data-toggle="tooltip" data-placement="top" title="pending">
+                        <i class="ti ti-history"></i>
+                    </a>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ route('reparation.formindent', ['id_booking' => $booking->id_booking]) }}" data-toggle="tooltip" data-placement="top" title="temuan">
+                        <i class="ti ti-history"></i>
+                    </a>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ route('booking.invoice', ['id' => $booking->id_booking]) }}" data-toggle="tooltip" data-placement="top" title="pdf">
+                                         <i class="ti ti-download"></i></a>
+                </td>
+                <td>{{ optional(optional($booking->idVehicleNavigation))->police_number ?? 'N/A' }}</td>
                 <td>{{ $booking->odometer }}</td>
                 <td>{{ $booking->complaint }}</td>
                 <td>{{ $booking->repair_status }}</td>
                 <td>
-                    -
+                    @if ($booking->repair_status == 'MENUNGGU'&& $booking->repair_method=='TEFA')
+                        <a href="{{ route('Vehicle.Edit', ['id' => $booking->id_booking]) }}">TEFA</a>
+                    @else($booking->repair_status == 'MENUNGGU'&& $booking->repair_method=='FAST TRACK')
+                        <a href="{{ route('Vehicle.Edit', ['id' => $booking->id_booking]) }}">FAST TRACK</a>
+                    @endif
                 </td>
             </tr>
         @endforeach
         </tbody>
     </table>
 @endsection
+<script>
+    function copyPhone(button) {
+        var phoneNumber = $(button).data('phone');
+
+        // Create a temporary input element
+        var tempInput = $('<input>');
+        $('body').append(tempInput);
+
+        // Set the value of the input to the phone number
+        tempInput.val(phoneNumber);
+
+        // Select and copy the text from the input
+        tempInput.select();
+        document.execCommand('copy');
+
+        // Remove the temporary input element
+        tempInput.remove();
+
+        // You can provide feedback to the user, e.g., show a tooltip or alert
+        alert('Nomor whatsapp berhasil disalin: ' + phoneNumber);
+    }
+</script>
