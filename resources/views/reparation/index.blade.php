@@ -36,7 +36,9 @@
         <tr>
             <td>
                 {{ $booking->idVehicleNavigation->type }}
-                <a class="btn btn-outline-primary btn-sm" href="{{ route('booking.history.form', ['id' => $booking->id_vehicle]) }}" data-toggle="tooltip" data-placement="top" title="Lihat riwayat kendaraan"><i class="ti ti-history"></i></a>
+                <a class="btn btn-outline-primary btn-sm" href="{{ route('vehicles.history', ['id' => $booking->id_vehicle]) }}" data-toggle="tooltip" data-placement="top" title="Lihat riwayat kendaraan">
+                    <i class="ti ti-history"></i>
+                </a>
             </td>
             <td>{{ $booking->idVehicleNavigation->police_number }}</td>
             <td>{{ $booking->odometer }}</td>
@@ -55,9 +57,9 @@
                         <i class="ti ti-dots-vertical"></i>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Invoice</a></li>
-                        <li><a class="dropdown-item" href="{{ route('pending.index', ['idBooking' => $booking->id_booking]) }}">Pending</a></li>
-                        <li><a class="dropdown-item" href="{{ route('reparation.form-special-handling', ['idBooking' => $booking->id_booking]) }}">Temuan</a></li>
+                        <li><a class="dropdown-item" href="{{ route('booking.invoice', ['id' => $booking->id_booking]) }}">Invoice</a></li>
+                        <li><a class="dropdown-item" href="{{ route('Pending.index', ['id_booking' => $booking->id_booking]) }}">Pending</a></li>
+                        <li><a class="dropdown-item" href="{{ route('reparation.form-indent', ['idBooking' => $booking->id_booking]) }}">Temuan</a></li>
                     </ul>
                 </div>
             </td>

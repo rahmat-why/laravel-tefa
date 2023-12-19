@@ -5,10 +5,14 @@
 @section('title', 'Riwayat Pending')
 
 @section('content')
-    @if ($repair_status === 'PENDING')
-           <p> Pending sedang berlangsung!</p>
-           <a href="{{ route('booking.history.form') }}" class="btn btn-secondary btn-sm w-100 py-2 fs-4 rounded-2 mt-3">Kembali</a>
-    @else
+
+    @if (session('errorMessage'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('errorMessage') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <form method="post" action="{{ route('Pending.start') }}">
             @csrf
             <input type="hidden" name="id_booking" value="{{ $id_booking }}">
@@ -25,11 +29,10 @@
                 </div>
             @else
                 <div class="text-end">
-                    <a href="{{ route('booking.history.form') }}" class="btn btn-primary mb-4 ms-auto">Kembali</a>
+                    <a href="{{ route('reparation.index', ['idBooking' => $id_booking]) }}" class="btn btn-primary mb-4 ms-auto">Kembali</a>
                 </div>
-             @endif
-        </form>
-    @endif
+            @endif
+    </form>
     <table class="table">
         <thead class="thead-dark">
             <tr>
@@ -53,7 +56,7 @@
                         @if ($pending->finish_time === null)
                             <form action="{{ route('Pending.stop', ['id_pending' => $pending->id_pending]) }}" method="POST" onsubmit="return confirm('Apakah anda yakin untuk melanjutkan servis ini?');">
                                 @csrf
-                                @method('PUT')
+                                @method('POST')
                                 <button type="submit" style="color: blue; text-decoration: none; border: none; background: none; cursor: pointer;">
                                     Lanjut Servis
                                 </button>

@@ -9,7 +9,7 @@
 @section('content')
 <form action="{{ route('reparation.post-form-finish-execution') }}" method="post">
     @csrf
-    <input type="hidden" name="idBooking" value="{{ $booking['id_booking'] }}" />
+    <input type="hidden" name="id_booking" value="{{ $booking['id_booking'] }}" />
     @if (session('ErrorMessage'))
         <div class="alert alert-danger" role="alert">
             {{ session('ErrorMessage') }}

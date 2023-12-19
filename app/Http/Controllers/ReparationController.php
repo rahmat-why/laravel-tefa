@@ -26,7 +26,7 @@ class ReparationController extends Controller
         return view('reparation.index', compact('booking'));
     }
 
-    public function formStartService(Request $request)
+    public function postFormStartService(Request $request)
     {
         $id_booking = $request->input('idBooking');
         $booking = TrsBooking::find($id_booking);
@@ -208,6 +208,7 @@ class ReparationController extends Controller
 
     public function postFormFinishExecution(Request $request)
     {
+        //dd($request->all);
         $trsBooking = TrsBooking::find($request->id_booking);
 
         if (!$trsBooking) {            
@@ -226,7 +227,7 @@ class ReparationController extends Controller
             return redirect()->route('reparation.index', ['idBooking' => $request->id_booking]);
         }
 
-        $trsBooking->end_repair_time = $request->input('end_repair_time');
+        $trsBooking->end_repair_time = now()->setTimezone('Asia/Jakarta');;
         $trsBooking->repair_status = "KONTROL";
         $trsBooking->progress = 70;
 
@@ -254,7 +255,7 @@ class ReparationController extends Controller
 
     public function postFormControl(Request $request)
     {
-        $id_booking = $request->input('IdBooking');
+        $id_booking = $request->input('idBooking');
         $booking = TrsBooking::find($id_booking);
 
         if (!$booking) {
@@ -301,16 +302,14 @@ class ReparationController extends Controller
 
     public function postFormEvaluation(Request $request)
     {
-        //dd($request->all());
-
         $request->validate([
             'evaluation' => 'required',
         ], [
             'evaluation.required' => 'Kolom evaluasi harus diisi.',
         ]);
         
-        $id_booking = $request->input('id_booking');
-        $trsBooking = TrsBooking::find($request->id_booking);
+        $id_booking = $request->input('idBooking');
+        $trsBooking = TrsBooking::find($id_booking);
 
         if (!$trsBooking) {           
             abort(404, 'Not Found');
@@ -334,67 +333,41 @@ class ReparationController extends Controller
         return redirect()->route('reparation.index', ['idBooking' => $id_booking]);
     }
 
-    public function FormIndent($idBooking)
+    public function formIndent($id_booking)
     {
-        $booking = TrsBooking::find($idBooking);
+        $allowedStatus = ['PENDING'];
+        $booking = TrsBooking::find($id_booking);
 
-        if (!$booking) {           
+        if (!$booking) {
             abort(404, 'Not Found');
         }
 
-        if ($booking->repair_status !== 'PENDING') {
-        session()->flash('errorMessage', 'Indent hanya dapat dilakukan saat statusnya PENDING!');
-        return redirect()->route('reparation.form_indent', ['idBooking' => $idBooking]);
-    }
-        return view('reparation.form_indent', ['booking' => $booking]);
+        if (!in_array($booking->repair_status, $allowedStatus)) {
+            session()->flash('errorMessage', 'Temuan hanya bisa dilakukan pada saat pending.');
+        }
+
+        return view('reparation.form_ident', ['booking'=>$booking]);
     }
 
-    public function postFormIndent(Request $request)
+    public function PostFormIndent(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'id_booking' => 'required',
-            'additional_replacement_part' => 'required',
-            'additional_price' => 'required|numeric|min:0',
-        ]);
+         // Validasi data agar tidak boleh kosong
+         $request->validate([
+            'additional_replacement_part' => 'required|regex:/^[A-Za-z0-9 ]+$/',
+            'additional_price' => 'required|numeric',
+        ], [
+            'additional_replacement_part.required' => 'Alasan wajib diisi.',
+            'additional_replacement_part.regex' => 'Alasan harus mengandung huruf, angka, dan spasi saja.',
+            'additional_price.required' => 'Harga wajib diisi.',
+            'additional_price.numeric' => 'Harga harus berupa angka.',
+        ]); 
+        // Ambil data yang diterima dari formulir
+        $data = $request->all();
 
-        if ($validator->fails()) {
-            return redirect()->route('reparation.form_indent', ['idBooking' => $request->input('id_booking')])
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $bookings = TrsBooking::findOrFail($request->idBooking);
+            $bookings->update($data);
 
-        $booking = TrsBooking::find($request->input('id_booking'));
-
-        if (!$booking) {
-            abort(404, 'Booking not found');
-        }
-
-        // Validasi untuk mengingatkan bahwa "Indent" hanya dapat dilakukan ketika statusnya "PENDING"
-        if ($booking->repair_status !== 'PENDING') {
-            session()->flash('errorMessage', 'Perencanaan harus dilakukan setelah info proyek atau sebelum keputusan!');
-            return redirect()->route('reparation.index', ['idBooking' => $request->input('id_booking')]);
-        }
-
-        // Validasi deskripsi perbaikan dan ganti part tidak boleh kosong
-        if (empty($request->input('additional_replacement_part')) || $request->input('additional_price') == null) {
-            session()->flash('errorMessage', 'Tambahan ganti part dan tagihan tidak boleh kosong! Isi dengan 0 jika ingin mengosongkan.');
-            return redirect()->route('reparation.form_indent', ['idBooking' => $request->input('id_booking')]);
-        }
-
-        // Validasi angka menggunakan regex dan minimum 0
-        $price = $request->input('additional_price');
-        if (!is_numeric($price) || $price < 0) {
-            session()->flash('errorMessage', 'Tagihan hanya boleh berisi angka, jika tidak ada tagihan, silakan isi dengan 0 dan harus minimum 0');
-            return redirect()->route('reparation.form_indent', ['idBooking' => $request->input('id_booking')]);
-        }
-
-        $booking->additional_replacement_part = $request->input('additional_replacement_part');
-        $booking->additional_price = $price;
-
-        $booking->save();
-
-        session()->flash('successMessage', 'Indent berhasil disimpan!');
-
-        return redirect()->route('reparation.index', ['idBooking' => $request->input('id_booking')]);
+            session()->flash('successMessage', 'Kendaraan berhasil diperbaharui!');
+            return redirect(route('booking.history.form'));
     }
 }

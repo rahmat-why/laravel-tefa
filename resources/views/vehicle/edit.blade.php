@@ -21,7 +21,7 @@
                 @endif
                 <form method="post" action="{{ route('Vehicle.Update', $vehicle->id_vehicle) }}">
                     @csrf
-                    @method('PUT') <!-- Gunakan metode PUT untuk pembaruan -->
+                    @method('POST') <!-- Gunakan metode POST untuk pembaruan -->
                     <div class="mb-3">
                                 <label class="form-label">Type</label>
                                 <input type="text" class="form-control" name="type" value="{{ $vehicle->type }}" placeholder="#type">

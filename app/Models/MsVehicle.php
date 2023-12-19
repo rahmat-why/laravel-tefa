@@ -36,7 +36,7 @@ class MsVehicle extends Model
 
     public function trsBookings()
     {
-        return $this->hasMany(TrsBooking::class, 'id_vehicle')->orderBy('order_date', 'asc');
+        return $this->hasMany(TrsBooking::class, 'id_vehicle')->orderBy('order_date', 'desc');
     }
 
 }

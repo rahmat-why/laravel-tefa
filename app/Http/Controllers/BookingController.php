@@ -36,8 +36,7 @@ class BookingController extends Controller
     public function create()
     {
         $vehicles = MsVehicle::where('id_customer', auth()->user()->id_customer)->
-                                whereIn('classify',['MOBIL','MOTOR'])->
-                                get();
+        whereIn('classify',['MOBIL','MOTOR'])->get();
         return view('booking.Create', compact('vehicles'));
     }      
 
@@ -69,8 +68,7 @@ class BookingController extends Controller
 public function fast()
 {
     $vehicles = MsVehicle::where('id_customer', auth()->user()->id_customer)->
-                            whereIn('classify',['MOBIL','MOTOR'])->
-                            get();
+    whereIn('classify',['MOBIL','MOTOR'])-> get();
     return view('booking.fasttrack', compact('vehicles'));
 }      
 
@@ -100,9 +98,12 @@ public function faststore(Request $request)
 
 public function progress()
 {
-    $bookings = TrsBooking::all()->filter(function ($booking) {
-        return $booking->progress < 100;
-    });  
+    $bookings = TrsBooking::where(function ($query) {
+        $query->where('repair_status', '<>', 'SELESAI')
+              ->where('repair_status', '<>', 'BATAL');
+    })
+    ->orderBy("progress", "DESC")
+    ->get();
 
     return view('booking.progress', ['bookings' => $bookings]);
 }
@@ -141,9 +142,7 @@ public function report(Request $request)
 
     return view('booking.report', compact('report', 'countTefa', 'countService', 'countBatal', 'month'));
 }
-
-    
-   
+ 
     public function export(Request $request)
     {
         $month = $request->input('month', Carbon::now()->format('Y-m'));

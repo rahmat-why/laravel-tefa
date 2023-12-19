@@ -65,8 +65,6 @@ class InspectionListController extends Controller
 
         $booking->repair_status = "EKSEKUSI";
         $booking->start_repair_time = now() -> setTimezone('Asia/Jakarta'); // timezone jakarta
-        $booking->end_repair_time = now() -> setTimezone('Asia/Jakarta'); // timezone jakarta
-        $booking->finish_estimation_time = now() -> setTimezone('Asia/Jakarta'); // timezone jakarta
         $booking->progress = 45;
 
         $booking->update();

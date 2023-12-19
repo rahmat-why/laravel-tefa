@@ -10,7 +10,6 @@ use App\Http\Controllers\ReparationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\PendingController;
-use App\Http\Controllers\RaparationController;
 use App\Http\Controllers\InspectionListController;
 
 /*
@@ -34,10 +33,17 @@ Route::prefix('')->group(function () {
     Route::get('/authentication/process-logout', [AuthenticationController::class, 'processLogout'])->name('authentication.logout.process');
 });
 
-Route::prefix('')->group(function () {
+Route::middleware('auth:ms_users')->group(function () {
     Route::get('/user/login', [UserController::class, 'login'])->name('user.login.form');
     Route::post('/user/process-login', [UserController::class, 'processLogin'])->name('user.login.process');
     Route::get('/user/process-logout', [UserController::class, 'processLogout'])->name('user.logout.process');
+    Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
+    Route::post('/user/process-create', [UserController::class, 'processCreate'])->name('user.create.process');
+    Route::get('/user/index', [UserController::class, 'index'])->name('user.index');
+    Route::get('/user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
+    Route::post('/user/update/{id}', [UserController::class, 'update'])->name('user.update');
+    Route::get('/user/delete/{id}', [UserController::class, 'delete'])->name('user.delete.form');
+    Route::delete('/user/destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 });
 
 //home
@@ -86,11 +92,11 @@ Route::middleware('auth:ms_users')->group(function () {
     Route::get('/pending/{id_booking}', [PendingController::class, 'index'])->name('Pending.index');
     Route::put('/pending/stop/{id_pending}', [PendingController::class, 'stoppending'])->name('Pending.stop');
 
-
-    Route::get('/temuan/{id_booking}/{id_vehicle}', [RaparationController::class, 'inden'])->name('inden.form');
-    Route::post('/pending', [RaparationController::class, 'indenstore'])->name('inden.store');
+    Route::get('/temuan/{id_booking}/{id_vehicle}', [ReparationController::class, 'inden'])->name('inden.form');
+    Route::post('/pending', [ReparationController::class, 'indenstore'])->name('inden.store');
 });
 
+//Reparation
 Route::middleware('auth:ms_users')->group(function () {
     Route::get('reparation/index/{idBooking}', [ReparationController::class, 'index'])->name('reparation.index');
     Route::get('reparation/form-plan/{idBooking}', [ReparationController::class, 'formPlan'])->name('reparation.form-plan');
@@ -105,10 +111,10 @@ Route::middleware('auth:ms_users')->group(function () {
     Route::post('reparation/post-form-evaluation', [ReparationController::class, 'postFormEvaluation'])->name('reparation.post-form-evaluation');
     Route::get('reparation/form-indent/{idBooking}', [ReparationController::class, 'formIndent'])->name('reparation.form-indent');
     Route::post('reparation/post-form-indent', [ReparationController::class, 'postFormIndent'])->name('reparation.post-form-indent');
-    Route::get('reparation/form-special-handling/{idBooking}', [ReparationController::class, 'formSpecialHandling'])->name('reparation.form-special-handling');
-    Route::post('reparation/post-form-special-handling', [ReparationController::class, 'postFormSpecialHandling'])->name('reparation.post-form-special-handling');
+    Route::post('reparation/post-form-start-service', [ReparationController::class, 'postFormStartService'])->name('reparation.post-form-start-service');
 });
 
+//Inspection list
 Route::middleware('auth:ms_users')->group(function () {
     Route::get('inspection_list/index/{idBooking}', [InspectionListController::class, 'index'])->name('inspection_list.index');
     Route::post('inspection_list/create', [InspectionListController::class, 'create'])->name('inspection_list.create');

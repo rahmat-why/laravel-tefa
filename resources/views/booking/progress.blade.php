@@ -1,5 +1,6 @@
 @php
     $currentDatetime = now()->format('d F Y - H:i');
+    $bookings = $bookings->sortByDesc('progress');
 @endphp
 
 <!DOCTYPE html>

@@ -57,7 +57,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" asp-controller="User" asp-action="index" aria-expanded="false">
+                    <a class="sidebar-link" href="{{ route('user.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-cards"></i>
                         </span>

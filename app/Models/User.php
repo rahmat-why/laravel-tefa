@@ -10,35 +10,42 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $table = 'ms_users'; // Sesuaikan dengan nama tabel di database
+
+    protected $primaryKey = 'id_user'; // Sesuaikan dengan nama kolom primary key di database
+
+    public $incrementing = false; // Jika primary key bukan tipe auto-increment
+
     protected $fillable = [
-        'name',
-        'email',
+        'id_user',
+        'full_name',
+        'nim',
+        'nidn',
+        'username',
         'password',
+        'position',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    // ... (lainnya sesuai kebutuhan)
+
+    public function trsBookingHeadMechanicNavigations()
+    {
+        return $this->hasMany(TrsBooking::class, 'head_mechanic_id', 'id_user');
+    }
+
+    public function trsBookingServiceAdvisorNavigations()
+    {
+        return $this->hasMany(TrsBooking::class, 'service_advisor_id', 'id_user');
+    }
+
+    public function trsPendings()
+    {
+        return $this->hasMany(TrsPending::class, 'user_id', 'id_user');
+    }
 }

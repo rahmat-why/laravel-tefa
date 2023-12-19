@@ -1,4 +1,4 @@
-@extends('layouts.customer')
+    @extends('layouts.customer')
 
 @section('title', 'Riwayat Servis')
 
@@ -29,9 +29,7 @@
                                 <th>Perbaikan</th>
                                 <th>Ganti part</th>
                                 <th>Harga</th>
-                                <th>Unduh Invoice</th>
-
-                                
+                                <th>Unduh Invoice</th>      
                             </tr>
                         </thead>
                             <tbody>
