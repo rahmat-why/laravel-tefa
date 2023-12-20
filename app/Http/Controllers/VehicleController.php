@@ -17,15 +17,12 @@ class VehicleController extends Controller
      */
     public function index()
     {
-    $successMessage = session('successMessage');
-    $urlAction = route('Vehicle.Index');
-
-    $model = MsVehicle::where('id_customer', auth()->user()->id_customer)
-    ->whereIn('classify',['MOBIL','MOTOR'])
-    ->orderBy('type')
-    ->get();
-    
-    return view('Vehicle.index', compact('model', 'successMessage', 'urlAction'));
+        $vehicles = MsVehicle::where('id_customer', auth()->user()->id_customer)
+            ->whereIn('classify',['MOBIL','MOTOR'])
+            ->orderBy('type', 'ASC')
+            ->get();
+        
+        return view('Vehicle.index', compact('vehicles'));
     }
     
     /**
@@ -54,8 +51,6 @@ class VehicleController extends Controller
             'color' => 'required|regex:/^[A-Za-z ]+$/',
             'year' => 'required|numeric',
             'vehicle_owner' => 'required|regex:/^[A-Za-z ]+$/',
-            'chassis_number' => 'required|regex:/^[A-Za-z0-9]+$/',
-            'machine_number' => 'required|regex:/^[A-Za-z0-9]+$/',
         ], [
             'type.required' => 'Tipe wajib diisi.',
             'type.regex' => 'Tipe harus mengandung huruf, angka, dan spasi saja.',
@@ -69,10 +64,6 @@ class VehicleController extends Controller
             'year.numeric' => 'Tahun harus mengandung angka saja.',
             'vehicle_owner.required' => 'Pemilik Kendaraan wajib diisi.',
             'vehicle_owner.regex' => 'Pemilik Kendaraan harus mengandung huruf dan spasi saja.',
-            'chassis_number.required' => 'Nomor Rangka wajib diisi.',
-            'chassis_number.regex' => 'Nomor Rangka harus mengandung huruf dan angka saja.',
-            'machine_number.required' => 'Nomor Mesin wajib diisi.',
-            'machine_number.regex' => 'Nomor Mesin harus mengandung huruf dan angka saja.',
         ]);
     
         // Automatically assign id_customer based on the authenticated user
@@ -132,8 +123,6 @@ class VehicleController extends Controller
             'color' => 'required|regex:/^[A-Za-z ]+$/',
             'year' => 'required|numeric',
             'vehicle_owner' => 'required|regex:/^[A-Za-z ]+$/',
-            'chassis_number' => 'required|regex:/^[A-Za-z0-9]+$/',
-            'machine_number' => 'required|regex:/^[A-Za-z0-9]+$/',
         ], [
             'type.required' => 'Tipe wajib diisi.',
             'type.regex' => 'Tipe harus mengandung huruf, angka, dan spasi saja.',
@@ -147,10 +136,6 @@ class VehicleController extends Controller
             'year.numeric' => 'Tahun harus mengandung angka saja.',
             'vehicle_owner.required' => 'Pemilik Kendaraan wajib diisi.',
             'vehicle_owner.regex' => 'Pemilik Kendaraan harus mengandung huruf dan spasi saja.',
-            'chassis_number.required' => 'Nomor Rangka wajib diisi.',
-            'chassis_number.regex' => 'Nomor Rangka harus mengandung huruf dan angka saja.',
-            'machine_number.required' => 'Nomor Mesin wajib diisi.',
-            'machine_number.regex' => 'Nomor Mesin harus mengandung huruf dan angka saja.',
         ]);
         // Ambil data yang diterima dari formulir
         $data = $request->all();

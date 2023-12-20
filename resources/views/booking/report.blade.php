@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Booking Report')
+@section('title', 'Laporan Booking')
 
 @section('content')
     <div class="row">
@@ -39,7 +39,7 @@
         <div class="col-3">
             <div class="card overflow-hidden">
                 <div class="card-body p-4">
-                    <p class="mb-9 text-primary" style="font-size: 16px;">TATAL BATAL</p>
+                    <p class="mb-9 text-primary" style="font-size: 16px;">TOTAL BATAL</p>
                     <div class="row align-items-center">
                         <div class="col-4">
                             <i class="ti ti-xbox-x text-primary" style="font-size: 24px;"></i>
@@ -120,6 +120,9 @@
                     </td>
                     <td>
                         {{ $item->repair_status }}
+                        <a href="{{ route('reparation.index', ['idBooking' => $item->id_booking]) }}" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Lihat servis">
+                            <i class="ti ti-tool"></i>
+                        </a>
                     </td>
                 </tr>
             @empty

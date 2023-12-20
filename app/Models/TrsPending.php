@@ -26,7 +26,12 @@ class TrsPending extends Model
 
     public function IdBookingNavigation()
     {
-        return $this->belongsTo(TrsBooking ::clas, 'id_booking', 'id_booking');
+        return $this->belongsTo(TrsBooking ::class, 'id_booking', 'id_booking');
+    }
+
+    public function IdUserNavigation()
+    {
+        return $this->belongsTo(MsUser ::class, 'id_user', 'id_user');
     }
 }
 

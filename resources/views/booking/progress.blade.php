@@ -39,17 +39,17 @@
                         @else
                             <i class="ti ti-car position-absolute text-black" style="left: calc({{ $item->progress }}% - 30px); top: -10px; font-size: 30px;"></i>
                         @endif
-                        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ $item->progress }}%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped {{ ($item->repair_status == 'PENDING') ? 'bg-warning' : '' }}" role="progressbar" style="width: {{ $item->progress }}%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
                             {{ $item->repair_status }} ({{ $item->progress }}%)
                         </div>
                     </div>
                 </div>
                 <div class="col-2">
                     @php
-                        $name = optional(optional($item->idVehicleNavigation)->idCustomerNavigation)->name;
+                        $name = $item->idVehicleNavigation->idCustomerNavigation->name;
                     @endphp
                     <div style="font-weight: bold;">
-                        {{ $name ?? 'N/A' }}
+                        {{ $name }}
                     </div>
                     <div>
                         {{ optional($item->finish_estimation_time)->format('d F Y - H:i') ?? 'N/A' }}
@@ -58,6 +58,12 @@
             </div>
         @endforeach
     </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="py-6 px-6 text-center">
+            <p class="mb-0 fs-4">Developed by <b>Astra Polytechnic</b></p>
+        </div>
+    </footer>
 
     <script src="{{ asset('Content/assets/libs/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('Content/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>

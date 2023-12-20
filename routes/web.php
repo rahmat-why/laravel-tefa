@@ -31,11 +31,11 @@ Route::prefix('')->group(function () {
     Route::get('/authentication/verification', [AuthenticationController::class, 'verification'])->name('authentication.verification.form');
     Route::post('/authentication/process-verification', [AuthenticationController::class, 'processVerification'])->name('authentication.verification.process');
     Route::get('/authentication/process-logout', [AuthenticationController::class, 'processLogout'])->name('authentication.logout.process');
+    Route::get('/user/login', [UserController::class, 'login'])->name('user.login.form');
+    Route::post('/user/process-login', [UserController::class, 'processLogin'])->name('user.login.process');
 });
 
 Route::middleware('auth:ms_users')->group(function () {
-    Route::get('/user/login', [UserController::class, 'login'])->name('user.login.form');
-    Route::post('/user/process-login', [UserController::class, 'processLogin'])->name('user.login.process');
     Route::get('/user/process-logout', [UserController::class, 'processLogout'])->name('user.logout.process');
     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/user/process-create', [UserController::class, 'processCreate'])->name('user.create.process');
@@ -58,7 +58,7 @@ Route::middleware(['auth:ms_customers'])->group(function () {
     Route::get('/vehicle/create', [VehicleController::class, 'create'])->name('Vehicle.Create');
     Route::post('/vehicle/create', [VehicleController::class, 'store'])->name('Vehicle.Store');
     Route::get('/vehicle/{id}/edit', [VehicleController::class, 'edit'])->name('Vehicle.Edit');
-    Route::put('/vehicle/{id}', [VehicleController::class, 'update'])->name('Vehicle.Update');
+    Route::post('/vehicle/{id}/update', [VehicleController::class, 'update'])->name('Vehicle.Update');
     Route::delete('/vehicle/{id}', [VehicleController::class, 'destroy'])->name('Vehicle.Destroy');
 });
 
@@ -68,8 +68,8 @@ Route::middleware(['auth:ms_customers'])->group(function () {
     Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.Create');
     Route::post('/booking/create', [BookingController::class, 'store'])->name('booking.Store');
 
-    Route::get('/booking/createe', [BookingController::class, 'fast'])->name('booking.fast');
-    Route::post('/booking/createe', [BookingController::class, 'faststore'])->name('booking.faststore');
+    Route::get('/booking/fast', [BookingController::class, 'fast'])->name('booking.fast');
+    Route::post('/booking/fast', [BookingController::class, 'faststore'])->name('booking.faststore');
 });
 
 //Booking (user/sa)
@@ -90,7 +90,7 @@ Route::middleware('auth:ms_users')->group(function () {
 Route::middleware('auth:ms_users')->group(function () {
     Route::post('/pending/start', [PendingController::class, 'startpending'])->name('Pending.start');
     Route::get('/pending/{id_booking}', [PendingController::class, 'index'])->name('Pending.index');
-    Route::put('/pending/stop/{id_pending}', [PendingController::class, 'stoppending'])->name('Pending.stop');
+    Route::post('/pending/stop/{id_pending}', [PendingController::class, 'stoppending'])->name('Pending.stop');
 
     Route::get('/temuan/{id_booking}/{id_vehicle}', [ReparationController::class, 'inden'])->name('inden.form');
     Route::post('/pending', [ReparationController::class, 'indenstore'])->name('inden.store');
@@ -109,8 +109,8 @@ Route::middleware('auth:ms_users')->group(function () {
     Route::post('reparation/post-form-control', [ReparationController::class, 'postFormControl'])->name('reparation.post-form-control');
     Route::get('reparation/form-evaluation/{idBooking}', [ReparationController::class, 'formEvaluation'])->name('reparation.form-evaluation');
     Route::post('reparation/post-form-evaluation', [ReparationController::class, 'postFormEvaluation'])->name('reparation.post-form-evaluation');
-    Route::get('reparation/form-indent/{idBooking}', [ReparationController::class, 'formIndent'])->name('reparation.form-indent');
-    Route::post('reparation/post-form-indent', [ReparationController::class, 'postFormIndent'])->name('reparation.post-form-indent');
+    Route::get('reparation/form-special-handling/{idBooking}', [ReparationController::class, 'formSpecialHandling'])->name('reparation.form-special-handling');
+    Route::post('reparation/post-form-special-handling', [ReparationController::class, 'postFormSpecialHandling'])->name('reparation.post-form-special-handling');
     Route::post('reparation/post-form-start-service', [ReparationController::class, 'postFormStartService'])->name('reparation.post-form-start-service');
 });
 

@@ -4,71 +4,75 @@
 
 @section('content')
 <!--  Body Wrapper -->
-<div class="position-relative overflow-hidden min-vh-100 d-flex align-items-center justify-content-center">
+<div class="position-relative overflow-hidden d-flex align-items-center justify-content-center">
     <div class="d-flex align-items-center justify-content-center w-100">
         <div class="row justify-content-center w-100">
             <div class="card-body">
-                <span class="text-nowrap logo-img text-center d-block py-4 w-100">
-                </span>
-                <div class="text-center">
-                    <b><h4>Form Fast track Servis</h4></b>
-                    <p class="mb-0">Fast Track ditujukan untuk servis yang urgent
-                    dan harus di hari yang sama</p>
-                </div>
-                <p></p>
+                <nav aria-label="breadcrumb" class="bg-light p-3 mt-2">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="{{ route('home.form') }}">Beranda</a></li>
+                        <li class="breadcrumb-item">Servis</li>
+                    </ol>
+                </nav>
+                <h6 class="mt-2 text-center"><b>FAST TRACK</b></h6>
+                <p class="text-center">Servis dengan urgensi tinggi yang dibooking pada hari ini</p>
                 @if (session('ErrorMessage'))
                 <div class="alert alert-danger" role="alert">
                     {{ session('ErrorMessage') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 @endif
-
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="text-primary">
+                    Loading...
+                </div>
                 <form method="post" action="{{ route('booking.faststore') }}">
                     @csrf
-                    <div class="text-danger"></div>
-                    <div class="mb-3">
-                        <label class="form-label">Tanggal Booking</label>
-                        <input type="text" class="form-control" value="{{ now()->format('d F Y') }}" readonly>
-                    </div>
+                    <div class="row g-3">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <label class="form-label">Tanggal Booking</label>
+                            <input type="text" class="form-control" value="{{ now()->format('d F Y') }}" readonly>
+                            <div id="orderDateHelp" class="form-text">Fast track akan dibooking hari ini juga</div>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="id_vehicle">Kendaraan</label>
-                        <select name="id_vehicle" class="form-control" required>
-                            @foreach ($vehicles as $vehicle)
-                                <option value="{{ $vehicle->id_vehicle }}">{{ $vehicle->type }} - {{ $vehicle->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <label for="id_vehicle">Kendaraan</label>
+                            <select name="id_vehicle" class="form-control" required>
+                                @foreach ($vehicles as $vehicle)
+                                    <option value="{{ $vehicle->id_vehicle }}">{{ $vehicle->type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Odometer</label>
-                        <input name="odometer" class="form-control" required>
-                        <span class="text-danger"></span>
-                        @error('odometer')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <label class="form-label">Odometer (km)</label>
+                            <input name="odometer" class="form-control" required>
+                            <span class="text-danger"></span>
+                            @error('odometer')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Keluhan</label>
-                        <textarea class="form-control" name="complaint" aria-describedby="addressHelp" required></textarea>
-                        <span class="text-danger"></span>
-                        @error('complaint')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <label class="form-label">Keluhan</label>
+                            <textarea class="form-control" name="complaint" aria-describedby="addressHelp" required></textarea>
+                            <span class="text-danger"></span>
+                            @error('complaint')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                    <div class="form-check">
-                        <input type="checkbox" name="checklist" class="form-check-input" id="AgreeToTerms" required>
-                        <label class="form-check-label" for="AgreeToTerms">Spare part disiapkan atau dibeli oleh customer</label>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-check">
+                                <input type="checkbox" name="checklist" class="form-check-input" id="AgreeToTerms" required>
+                                <label class="form-check-label" for="AgreeToTerms">Spare part disiapkan atau dibeli oleh customer</label>
+                            </div>
+                        </div>
                     </div>
-
-                    <button type="submit" class="btn btn-primary btn-sm w-100 py-2 fs-4 rounded-2 mt-3">Booking</button>
+                    <hr />
+                    <button type="submit" class="btn btn-primary mb-2">Simpan</button>
                 </form>
             </div>
-            <a href="{{ route('home.form') }}" class="btn btn-outline-dark btn-sm w-100 py-2 fs-4 rounded-2 mt-3 mb-3">Home</a>
-            <p class="text-center mt-5">
-            </p>
         </div>
     </div>
 </div>

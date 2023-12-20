@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'index')
+@section('title', 'SERVIS '.$booking->repair_method)
 
 @section('content')
     @if (session('ErrorMessage'))
@@ -27,9 +27,6 @@
             <th>Estimasi Selesai</th>
             <th>Status</th>
             <th>Menu</th>
-            @if(auth()->user()->position == 'SERVICE ADVISOR')
-                <th>#</th>
-            @endif
         </tr>
     </thead>
     <tbody>
@@ -45,7 +42,7 @@
             <td>{{ $booking->complaint }}</td>
             <td>
                 @if ($booking->finish_estimation_time)
-                    {{ \Carbon\Carbon::parse($booking->finish_estimation_time)->format('d M y - H:i') }}
+                    {{ \Carbon\Carbon::parse($booking->finish_estimation_time)->format('d F Y - H:i') }}
                 @else
                     <span>-</span>
                 @endif
@@ -59,13 +56,10 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ route('booking.invoice', ['id' => $booking->id_booking]) }}">Invoice</a></li>
                         <li><a class="dropdown-item" href="{{ route('Pending.index', ['id_booking' => $booking->id_booking]) }}">Pending</a></li>
-                        <li><a class="dropdown-item" href="{{ route('reparation.form-indent', ['idBooking' => $booking->id_booking]) }}">Temuan</a></li>
+                        <li><a class="dropdown-item" href="{{ route('reparation.form-special-handling', ['idBooking' => $booking->id_booking]) }}">Temuan</a></li>
                     </ul>
                 </div>
             </td>
-            @if(auth()->user()->position == 'SERVICE ADVISOR')
-                <th>#</th>
-            @endif
         </tr>
     </tbody>
 </table>
@@ -131,7 +125,7 @@
     <div class="col-sm-6 col-xl-2">
         <a href="{{ route('reparation.form-control', ['idBooking' => $booking->id_booking]) }}" class="position-relative">
             <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #5296D6; position: relative;">
-                <h6 class="text-white">Kontrol</h6>
+                <h6 class="text-white">KONTROL</h6>
                 @if ($booking->control == null || $booking->control == 0)
                     <i class="ti ti-loader text-warning position-absolute" style="top: 5px; right: 5px;"></i>
                 @else

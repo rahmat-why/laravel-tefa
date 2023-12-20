@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'TEFA') - TEFA</title>
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/logos/logo-favicon.png') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}" />
 </head>
 <body>
@@ -28,50 +27,56 @@
                     <i class="ti ti-x fs-8"></i>
                 </div>
             </div>
-            <div class ="text-center"><b>{{ auth()->user()->full_name }}-SERVICE ADVISOR</b></div>
             <!-- Sidebar navigation-->
             <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-            <ul id="sidebarnav">
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('booking.history.form') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-layout-dashboard"></i>
-                        </span>
-                        <span class="hide-menu">Daftar Booking </span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('booking.progres.form') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-article"></i>
-                        </span>
-                        <span class="hide-menu">Servis Berjalan</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                <a class="sidebar-link" href="{{ route('booking.report.form') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-alert-circle"></i>
-                        </span>
-                        <span class="hide-menu">Laporan Booking</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('user.index') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-cards"></i>
-                        </span>
-                        <span class="hide-menu">Akun Mekanik</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="unlimited-access hide-menu position-relative mb-7 mt-5 rounded">
-                <div class="d-flex">
-                    <div class="unlimited-access-title me-3">
-                        <a href="{{ route('user.logout.process') }}" class="btn btn-primary fs-2 fw-semibold lh-sm">Logout</a>
+                <ul id="sidebarnav">
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">{{ auth()->user()->full_name }} - {{ auth()->user()->position }}</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('booking.history.form') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-layout-dashboard"></i>
+                            </span>
+                            <span class="hide-menu">Daftar Booking </span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('booking.progres.form') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-article"></i>
+                            </span>
+                            <span class="hide-menu">Servis Berjalan</span>
+                        </a>
+                    </li>
+                    @if(auth()->user()->position == "SERVICE ADVISOR")
+                    <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('booking.report.form') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-alert-circle"></i>
+                            </span>
+                            <span class="hide-menu">Laporan Booking</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('user.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-cards"></i>
+                            </span>
+                            <span class="hide-menu">Akun Mekanik</span>
+                        </a>
+                    </li>
+                    @endif
+                </ul>
+                <div class="unlimited-access hide-menu position-relative mb-7 mt-5 rounded">
+                    <div class="d-flex">
+                        <div class="unlimited-access-title me-3">
+                            <a href="{{ route('user.logout.process') }}" class="btn btn-primary fs-2 fw-semibold lh-sm">Logout</a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </nav>
         <!-- End Sidebar scroll-->
     </aside>
     <!--  Sidebar End -->
@@ -120,9 +125,31 @@
 <script src="{{ asset('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/js/sidebarmenu.js') }}"></script>
 <script src="{{ asset('assets/js/app.min.js') }}"></script>
-<script src="{{ asset('assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
 <script src="{{ asset('assets/libs/simplebar/dist/simplebar.js') }}"></script>
 <script src="{{ asset('assets/js/dashboard.js') }}"></script>
+
+<script>
+    function copyPhone(button) {
+        var phoneNumber = $(button).data('phone');
+
+        // Create a temporary input element
+        var tempInput = $('<input>');
+        $('body').append(tempInput);
+
+        // Set the value of the input to the phone number
+        tempInput.val(phoneNumber);
+
+        // Select and copy the text from the input
+        tempInput.select();
+        document.execCommand('copy');
+
+        // Remove the temporary input element
+        tempInput.remove();
+
+        // You can provide feedback to the user, e.g., show a tooltip or alert
+        alert('Nomor whatsapp berhasil disalin: ' + phoneNumber);
+    }
+</script>
       
 </body>
 </html>

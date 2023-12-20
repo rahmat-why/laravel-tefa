@@ -1,23 +1,24 @@
-    @extends('layouts.customer')
+@extends('layouts.customer')
 
 @section('title', 'Riwayat Servis')
 
 @section('content')
-    <!--  Body Wrapper -->
-    <div class="position-relative overflow-hidden min-vh-100 d-flex align-items-center justify-content-center">
-        <div class="d-flex align-items-center justify-content-center w-100">
-            <div class="row justify-content-center w-100">
-                <div class="card-body">
-                    <span class="text-nowrap logo-img text-center d-block py-4 w-100">
-                    </span>
-                    <p class="text-center">
-                        <b>RIWAYAT SERVICE</b>
-                    </p>
-                    @if(session('successMessage'))
-                        <div class="alert alert-success">
-                            {{ session('successMessage') }}
-                        </div>
-                    @endif
+<div class="position-relative overflow-hidden d-flex align-items-center justify-content-center">
+    <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+            <div class="card-body">
+                <nav aria-label="breadcrumb" class="bg-light p-3 mt-2">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="{{ route('home.form') }}">Beranda</a></li>
+                        <li class="breadcrumb-item">Riwayat Servis</li>
+                    </ol>
+                </nav>
+                @if(session('successMessage'))
+                    <div class="alert alert-success">
+                        {{ session('successMessage') }}
+                    </div>
+                @endif
+                <div class="card mt-3">
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered">
                         <thead>
@@ -43,15 +44,16 @@
                                         <td>{{ $item->repair_description ?:'-'}}</td>
                                         <td>{{ $item->replacement_part ?:'-'}}</td>
                                         <td>Rp.{{ number_format($item->price ?: 0, 0, ',', '.') }}</td>
-                                    @if($item->repair_status=='SELESAI')
-                                        <td> <a class="btn btn-outline-primary btn-sm" href="{{ route('booking.invoice', ['id' => $item->id_booking]) }}" data-toggle="tooltip" data-placement="top" title="pdf">
-                                            <i class="ti ti-download"></i></a>
-                                        </td>
-                                    @else
-                                        <td>
-                                            <i class="fas fa-spinner fa-spin"title="Sedang Proses Perbaikan"></i></a>
-                                        </td>
-                                    @endif
+                                        
+                                        @if($item->repair_status == 'SELESAI' || $item->repair_status == 'BATAL')
+                                            <td> <a class="btn btn-outline-primary btn-sm" href="{{ route('booking.invoice', ['id' => $item->id_booking]) }}" data-toggle="tooltip" data-placement="top" title="pdf">
+                                                <i class="ti ti-download"></i></a>
+                                            </td>
+                                        @else
+                                            <td>
+                                                <i class="fas fa-spinner fa-spin"title="Sedang Proses Perbaikan"></i></a>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @empty
                                     <tr>
@@ -64,10 +66,7 @@
                         </table>
                     </div>
                 </div>
-                <a href="{{ route('home.form') }}" class="btn btn-outline-dark btn-sm w-100 py-2 fs-4 rounded-2 mt-3 mb-3">Home</a>
             </div>
-            <p class="text-center mt-5">
-            </p>
         </div>
     </div>
 </div>

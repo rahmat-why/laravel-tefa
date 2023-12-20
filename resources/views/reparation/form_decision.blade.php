@@ -63,8 +63,8 @@
         </tbody>
     </table>
     <div class="text-end">
+        <a class="btn btn-outline-success mb-4 ms-auto" data-phone="{{ optional($booking->idVehicleNavigation)->idCustomerNavigation->phone }}" onclick="copyPhone(this)" data-toggle="tooltip" data-placement="top" title="Salin nomor whatsapp"><i class="ti ti-brand-whatsapp"></i></a>
         @if (!in_array($booking->repair_status, ['KEPUTUSAN', 'INSPECTION LIST']))
-            <a class="btn btn-outline-success mb-4 ms-auto" data-phone="{{ optional($booking->idVehicleNavigation)->idCustomerNavigation->phone }}" onclick="copyPhone(this)" data-toggle="tooltip" data-placement="top" title="Salin nomor whatsapp"><i class="ti ti-brand-whatsapp"></i></a>
             <a href="{{ route('reparation.index', ['idBooking' => $booking->id_booking]) }}" class="btn btn-outline-primary mb-4 ms-auto">
                 Kembali
             </a>

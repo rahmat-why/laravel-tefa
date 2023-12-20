@@ -13,15 +13,14 @@ class PendingController extends Controller
         $booking = TrsBooking::find($id_booking);
         
         if (!in_array($booking->repair_status, $allowedStatus)) {
-            session()->flash('errorMessage', 'Pending hanya dapat dilakukan saat Inspection List, Eksekusi, dan Kontrol.');
+            session()->flash('errorMessage', 'Pending hanya dapat dilakukan saat eksekusi');
         }
-        $pending = TrsPending::where("id_booking", $id_booking)->get();
-        return view('pending.index',['pending' => $pending,'id_booking' => $id_booking, 'repair_status'=>$booking->repair_status]);
+        $pending = TrsPending::with('IdUserNavigation')->where("id_booking", $id_booking)->get();
+        return view('pending.index',['pending' => $pending,'booking' => $booking, 'repair_status'=>$booking->repair_status]);
     }
 
     public function startpending(Request $request)
     {
-        $timezone = 'Asia/Jakarta';
         $request->validate([
             'reason' => 'required|regex:/^[A-Za-z0-9 ]+$/',
         ], [
@@ -52,7 +51,7 @@ class PendingController extends Controller
         $request->merge(['id_user' => auth()->user()->id_user]);
 
         // Waktu sekarang zona 
-        $waktuSekarang = Carbon::now($timezone);
+        $waktuSekarang = Carbon::now('Asia/Jakarta');
         $request->merge(['start_time' => $waktuSekarang]);
 
         // Simpan data ke dalam database setelah validasi
@@ -63,14 +62,11 @@ class PendingController extends Controller
             ->update(['repair_status' => 'PENDING']);
 
         // Redirect ke halaman yang diinginkan setelah data disimpan
-        return redirect()->route('booking.history.form')->with('successMessage', 'Kendaraan berhasil disimpan!');
+        return redirect()->route('reparation.index', ['idBooking' => $request->id_booking]);
     }
 
     public function stoppending(Request $request, $id_pending)
     {
-        //time zone
-        $timezone = 'Asia/Jakarta';
-
         // Mencari data pending berdasarkan ID
         $pending = TrsPending::find($id_pending);
     
@@ -83,7 +79,7 @@ class PendingController extends Controller
         $booking = TrsBooking::find($pending->id_booking);
 
          // Waktu sekarang
-        $waktuSekarang = Carbon::now($timezone);
+        $waktuSekarang = Carbon::now('Asia/Jakarta');
 
         // Update waktu selesai pada data pending
         $pending->update([   
@@ -99,18 +95,22 @@ class PendingController extends Controller
             $repair_status = "KONTROL";
         }
 
-        // Menghitung waktu estimasi selesai baru dengan mempertimbangkan waktu mulai dan selesai pada data pending
+        // Calculate the new finish estimation time by considering the start and finish times in the pending data
         $newFinishEstimationTime = Carbon::parse($booking->finish_estimation_time)
-            ->addSeconds(Carbon::parse($pending->finish_time)->diffInSeconds(Carbon::parse($pending->start_time)))
-            ->setTimezone($timezone);
-        
-        // Update status perbaikan dan estimasi selesai pada data booking
-        $booking->update([
-            'repair_status'=>$repair_status,
-            'finish_estimation_time'=>  $newFinishEstimationTime,
-        ]);        
+        ->addSeconds(Carbon::parse($pending->finish_time)->diffInSeconds(Carbon::parse($pending->start_time)))
+        ->setTimezone('Asia/Jakarta');
 
-        return redirect()->route('booking.history.form')->with('successMessage', 'Kendaraan berhasil disimpan!');
+        // Update repair status and finish estimation time in the booking data
+        $booking->update([
+        'repair_status' => $repair_status,
+        'finish_estimation_time' => $newFinishEstimationTime,
+        ]);
+
+        // Set success message in session
+        $request->session()->flash('SuccessMessage', 'Servis berhasil dilanjutkan dengan estimasi selesai hingga: ' . $newFinishEstimationTime->format('d F Y - H:i') . '!');
+
+        // Redirect to the Reparation index with the idBooking parameter
+        return redirect()->route('reparation.index', ['idBooking' => $booking->id_booking]);
     }
     
 }

@@ -18,7 +18,7 @@ class ReparationController extends Controller
         $booking = TrsBooking::with('idVehicleNavigation')->where('id_booking', $idBooking)->first();
 
         if ($booking->repair_status === 'BATAL'){
-            session()->flash('ErrorMessge', 'Servis ini telah dibatalkan dan tidak dapat dilanjutkan lagi!');
+            session()->flash('ErrorMessage', 'Servis ini telah dibatalkan dan tidak dapat dilanjutkan lagi!');
         } elseif ($booking->repair_status === 'PENDING'){
             session()->flash('ErrorMessage', 'Servis ini sedang dipending!');
         }
@@ -28,6 +28,10 @@ class ReparationController extends Controller
 
     public function postFormStartService(Request $request)
     {
+        if(!in_array(auth()->user()->position, ["SERVICE ADVISOR"])) {
+            abort(403, 'Unauthorized.');
+        }
+        
         $id_booking = $request->input('idBooking');
         $booking = TrsBooking::find($id_booking);
 
@@ -36,6 +40,7 @@ class ReparationController extends Controller
         }
 
         $booking->repair_status = 'PERENCANAAN';
+        $booking->service_advisor = auth()->user()->id_user;
         $booking->save();
 
         session()->flash('successMessage', 'Servis berhasil dimulai!');
@@ -62,6 +67,10 @@ class ReparationController extends Controller
 
     public function processFormPlan(Request $request)
     {
+        if(!in_array(auth()->user()->position, ["HEAD MECHANIC"])) {
+            abort(403, 'Unauthorized.');
+        }
+        
         $validatedData = $request->validate([
             'repair_description' => 'required|string',
             'replacement_part' => 'nullable',
@@ -70,7 +79,7 @@ class ReparationController extends Controller
         ], [
             'repair_description.required' => 'Kolom Deskripsi Perbaikan harus diisi.', 
             'replacement_part.required' => 'Kolom Ganti Part harus diisi.',
-            'price.required' => 'Kolom Harga harus diisi.',
+            'price.required' => 'Kolom Harga harus diisi minimal 0.',
             'price.numeric' => 'Kolom Harga harus berupa angka.',
             'price.min' => 'Kolom Harga tidak boleh kurang dari 0.',
             'finish_estimation_time.required' => 'Kolom Estimasi Selesai harus diisi.',
@@ -96,6 +105,7 @@ class ReparationController extends Controller
             'finish_estimation_time' => $validatedData['finish_estimation_time'],
             'repair_status' => 'KEPUTUSAN',
             'progress' => 10,
+            'head_mechanic' => auth()->user()->id_user,
         ]);
 
         session()->flash('SuccessMessage', 'Perencanaan berhasil! Tahapan berlanjut ke keputusan!');
@@ -122,6 +132,10 @@ class ReparationController extends Controller
 
     public function postFormDecision(Request $request)
     {
+        if(!in_array(auth()->user()->position, ["SERVICE ADVISOR"])) {
+            abort(403, 'Unauthorized.');
+        }
+
         $validator = Validator::make($request->all(), [
             'decision' => 'required',
         ], [
@@ -153,6 +167,8 @@ class ReparationController extends Controller
         $booking->repair_status = $repairStatus;
         $booking->progress = 20;
 
+        $booking->save();
+
         if ($repairStatus == 'BATAL') {
             session()->flash('SuccessMessage', 'Servis berhasil dibatalkan!');
             return redirect()->route('reparation.index', ['idBooking' => $id_booking]);
@@ -161,9 +177,9 @@ class ReparationController extends Controller
         // Menyimpan data mentah inspection list dari tabel equipment jika kendaraan mobil
         if ($booking->idVehicleNavigation->classify == 'MOBIL') {
             // Lakukan penghapusan data lama
-            TrsInspectionList::where('idBooking', $id_booking)->delete();
+            TrsInspectionList::where('id_booking', $id_booking)->delete();
 
-            $equipment = MsEquipment::where('IsActive', 1)->get();
+            $equipment = MsEquipment::where('is_active', 1)->get();
             foreach ($equipment as $equip) {
                 $id_inspection = mt_rand(100000, 999999);
                 TrsInspectionList::create([
@@ -176,8 +192,6 @@ class ReparationController extends Controller
             }
         }
 
-        $booking->save();
-
         session()->flash('SuccessMessage', 'Keputusan berhasil! Tahapan berlanjut ke inspection list!');
 
         return redirect()->route('reparation.index', ['idBooking' => $request->id_booking]);
@@ -185,6 +199,10 @@ class ReparationController extends Controller
 
     public function formFinishExecution($idBooking)
     {
+        if(!in_array(auth()->user()->position, ["HEAD MECHANIC"])) {
+            abort(403, 'Unauthorized.');
+        }
+
         $booking = TrsBooking::find($idBooking);
 
         if (!$booking) {           
@@ -194,13 +212,11 @@ class ReparationController extends Controller
          // Validasi jika eksekusi sudah diselesaikan
          if ($booking->end_repair_time !== null) {
             session()->flash('ErrorMessage', 'Eksekusi sudah diselesaikan pada: ' . $booking->end_repair_time->format('d F Y - H:i'));
-            return redirect()->route('reparation.index', ['idBooking' => $idBooking]);
         }
 
         // Validasi untuk mengingatkan agar inspection list harus terlebih dahulu dilakukan sebelum selesai eksekusi
         if ($booking->repair_status !== "EKSEKUSI") {
             session()->flash('ErrorMessage', 'Selesai eksekusi harus dilakukan setelah inspection list!');
-            return redirect()->route('reparation.index', ['idBooking' => $idBooking]);
         }
 
         return view('reparation.form_finish_execution', compact('booking'));
@@ -255,6 +271,10 @@ class ReparationController extends Controller
 
     public function postFormControl(Request $request)
     {
+        if(!in_array(auth()->user()->position, ["SERVICE ADVISOR"])) {
+            abort(403, 'Unauthorized.');
+        }
+
         $id_booking = $request->input('idBooking');
         $booking = TrsBooking::find($id_booking);
 
@@ -302,10 +322,14 @@ class ReparationController extends Controller
 
     public function postFormEvaluation(Request $request)
     {
+        if(!in_array(auth()->user()->position, ["HEAD MECHANIC"])) {
+            abort(403, 'Unauthorized.');
+        }
+        
         $request->validate([
             'evaluation' => 'required',
         ], [
-            'evaluation.required' => 'Kolom evaluasi harus diisi.',
+            'evaluation.required' => 'Evaluasi harus diisi.',
         ]);
         
         $id_booking = $request->input('idBooking');
@@ -333,7 +357,7 @@ class ReparationController extends Controller
         return redirect()->route('reparation.index', ['idBooking' => $id_booking]);
     }
 
-    public function formIndent($id_booking)
+    public function formSpecialHandling($id_booking)
     {
         $allowedStatus = ['PENDING'];
         $booking = TrsBooking::find($id_booking);
@@ -346,28 +370,34 @@ class ReparationController extends Controller
             session()->flash('errorMessage', 'Temuan hanya bisa dilakukan pada saat pending.');
         }
 
-        return view('reparation.form_ident', ['booking'=>$booking]);
+        return view('reparation.form_special_handling', ['booking'=>$booking]);
     }
 
-    public function PostFormIndent(Request $request)
+    public function postFormSpecialHandling(Request $request)
     {
          // Validasi data agar tidak boleh kosong
          $request->validate([
-            'additional_replacement_part' => 'required|regex:/^[A-Za-z0-9 ]+$/',
+            'additional_replacement_part' => 'required',
             'additional_price' => 'required|numeric',
         ], [
             'additional_replacement_part.required' => 'Alasan wajib diisi.',
-            'additional_replacement_part.regex' => 'Alasan harus mengandung huruf, angka, dan spasi saja.',
             'additional_price.required' => 'Harga wajib diisi.',
             'additional_price.numeric' => 'Harga harus berupa angka.',
         ]); 
         // Ambil data yang diterima dari formulir
         $data = $request->all();
 
-        $bookings = TrsBooking::findOrFail($request->idBooking);
-            $bookings->update($data);
+        $booking = TrsBooking::findOrFail($request->id_booking);
 
-            session()->flash('successMessage', 'Kendaraan berhasil diperbaharui!');
-            return redirect(route('booking.history.form'));
+        if($booking->repair_status != "PENDING") {
+            session()->flash('ErrorMessage', 'Temuan harus dilakukan saat pending!');
+            return redirect()->route('reparation.index', ['idBooking' => $booking->id_booking]);
+        }
+
+        $booking->update($data);
+
+        session()->flash('SuccessMessage', 'Temuan berhasil disimpan!');
+        
+        return redirect()->route('reparation.index', ['idBooking' => $booking->id_booking]);
     }
 }

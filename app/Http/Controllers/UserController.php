@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\MsUser;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -61,20 +62,24 @@ class UserController extends Controller
 
     public function processCreate(Request $request)
     {
-       // Validasi request
         $request->validate([
-            'full_name' => 'required|string',
-            'nim' => 'required|string|unique:ms_users,nim',
-            'username' => 'required|string|unique:ms_users,username',
-            'password' => 'required|string',
+            'full_name' => 'required|regex:/^[a-zA-Z ]+$/',
+            'nim' => 'required|string|regex:/^[0-9]{10}$/|unique:ms_users,nim',
+            'nidn' => 'nullable|string', // No specific validation for NIDN provided in ASP.NET
+            'username' => 'required|string|regex:/^[a-zA-Z0-9]+$/|unique:ms_users,username',
+            'password' => 'required|string|regex:/^[a-zA-Z0-9]+$/',
             'position' => 'required|string',
         ], [
             'full_name.required' => 'Nama lengkap wajib diisi.',
+            'full_name.regex' => 'Nama lengkap hanya boleh huruf dan spasi.',
             'nim.required' => 'NIM wajib diisi.',
+            'nim.regex' => 'NIM harus terdiri dari 10 angka.',
             'nim.unique' => 'NIM sudah digunakan.',
             'username.required' => 'Username wajib diisi.',
+            'username.regex' => 'Username harus mengandung huruf dan angka.',
             'username.unique' => 'Username sudah digunakan.',
             'password.required' => 'Password wajib diisi.',
+            'password.regex' => 'Password harus mengandung huruf dan angka.',
             'position.required' => 'Posisi wajib diisi.',
         ]);
 
@@ -119,12 +124,16 @@ class UserController extends Controller
     {
         // Validasi request
         $request->validate([
-            'full_name' => 'required|string',
-            'nim' => 'required|string',
-            'password' => 'nullable|string',
+            'full_name' => 'required|regex:/^[a-zA-Z ]+$/',
+            'nim' => 'required|string|regex:/^[0-9]{10}$/',
+            'nidn' => 'nullable|string',
+            'position' => 'required|string',
         ], [
             'full_name.required' => 'Nama lengkap wajib diisi.',
+            'full_name.regex' => 'Nama lengkap hanya boleh huruf dan spasi.',
             'nim.required' => 'NIM wajib diisi.',
+            'nim.regex' => 'NIM harus terdiri dari 10 angka.',
+            'position.required' => 'Posisi wajib diisi.',
         ]);
 
         // Mengambil pengguna berdasarkan ID dari database
@@ -133,6 +142,16 @@ class UserController extends Controller
         // Jika pengguna tidak ditemukan, kembalikan respons 'Not Found'
         if (!$user) {
             return abort(404);
+        }
+
+        // Check for uniqueness of NIM, excluding the current record being edited
+        $existingUser = MsUser::where('nim', $request->nim)
+        ->where('id_user', '!=', $id)
+        ->count();
+
+        if ($existingUser > 0) {
+            // NIM is not unique
+            return redirect()->back()->with('ErrorMessage', 'NIM sudah digunakan!');
         }
 
         // Memperbarui seluruh atribut pengguna
@@ -183,12 +202,4 @@ class UserController extends Controller
         // Redirect ke halaman daftar pengguna setelah penghapusan
         return redirect()->route('user.index')->with('successMessage', 'Pengguna berhasil dihapus!');
     }
-
-    // Memeriksa keberadaan pengguna berdasarkan ID
-    private function msUserExists($id)
-    {
-        // Menggunakan metode exists pada model MsUser
-        return MsUser::where('id_user', $id)->exists();
-    }
-
 }

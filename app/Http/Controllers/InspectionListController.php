@@ -21,14 +21,20 @@ class InspectionListController extends Controller
         }
 
         $trsInspectionLists = TrsInspectionList::where('id_booking', $idBooking)
-            ->orderBy('id_equipment')
+            ->with(['booking', 'equipment'])
+            ->join("ms_equipments", "ms_equipments.id_equipment", "trs_inspection_list.id_equipment")
+            ->orderBy("ordering", "ASC")
             ->get();
 
-        return view('inspection_list.index', compact('trsInspectionLists', 'idBooking'));
+        return view('inspection_list.index', compact('trsInspectionLists', 'idBooking', 'trsBooking'));
     }
 
     public function create(Request $request)
     {
+        if(!in_array(auth()->user()->position, ["HEAD MECHANIC"])) {
+            abort(403, 'Unauthorized.');
+        }
+        
         $idBooking = $request->input('idBooking');
         $booking = TrsBooking::find($idBooking);
 

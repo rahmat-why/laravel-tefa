@@ -16,14 +16,14 @@
     <input type="hidden" name="id_booking" value="{{ $booking['id_booking'] }}" />
     <div class="mb-3">
         <label for="repair_description">Perbaikan : </label>
-        <input type="text" name="repair_description" class="form-control" value="{{ $booking['repair_description'] }}" />
+        <textarea name="repair_description" class="form-control">{{ $booking['repair_description'] }}</textarea>
         @error('repair_description')
             <span class="text-danger">{{ $message }}</span>
         @enderror
     </div>
     <div class="mb-3">
         <label for="replacement_part">Ganti Part : </label>
-        <input type="text" name="replacement_part" class="form-control" value="{{ $booking['replacement_part'] }}" />
+        <textarea name="replacement_part" class="form-control">{{ $booking['replacement_part'] }}</textarea>
         <small class="text-muted">Opsional: Anda dapat mengosongkan bagian ini jika tidak diperlukan.</small>
         @error('replacement_part')
             <span class="text-danger">{{ $message }}</span>
@@ -35,7 +35,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="price-addon">Rp.</span>
             </div>
-            <input type="text" name="price" onkeypress="return isNumberKey(event)" value="{{ old('price', $booking->price !== null ? number_format($booking->price, 2, ',', '.') : '') }}" class="form-control" aria-describedby="price-addon">
+            <input type="text" name="price" value="{{ old('price', str_replace(',', '', number_format($booking->price))) }}" class="form-control" aria-describedby="price-addon">
         </div>
         @error('price')
             <span class="text-danger">{{ $message }}</span>
@@ -61,23 +61,4 @@
         @endif
     </div>
 </form>
-
-<script>
-    function isNumberKey(evt) {
-        var charCode = (evt.which) ? evt.which : event.keyCode;
-
-        // Mengecek apakah karakter tersebut adalah angka (0-9) atau tanda titik (.)
-        if ((charCode < 48 || charCode > 57) && charCode !== 46) {
-            return false;
-        }
-
-        // Mengecek apakah karakter titik (.) muncul lebih dari satu kali
-        var inputValue = evt.target.value;
-        if (charCode === 46 && inputValue.indexOf('.') !== -1) {
-            return false;
-        }
-        
-        return true;
-    }
-</script>
 @endsection

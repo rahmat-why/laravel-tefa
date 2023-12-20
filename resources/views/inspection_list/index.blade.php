@@ -17,62 +17,52 @@
 <form action="{{ route('inspection_list.create') }}" method="post">
     @csrf
     <input type="hidden" name="idBooking" value="{{ $idBooking }}">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Kelengkapan</th>
-                <th>Masuk</th>
-                <th>Keluar</th>
-                <th>Keterangan</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($trsInspectionLists as $booking)
+    @if($trsBooking->idVehicleNavigation->classify == "MOBIL")
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        <input type="hidden" name="id_equipment{{ $booking->id_equipment }}" value="{{ $booking->id_equipment }}">
-                        @if ($booking->equipment)
-                            {{ $booking->equipment->name }}
-                        @else
-                            Nama Equipment tidak tersedia
-                        @endif
-                    </td>
-                    <td>
-                        @if ($booking->equipment)
-                            <input type="radio" name="checklist{{ $booking->equipment->id_equipment }}" value="1" {{ $booking->checklist == 1 ? 'checked' : '' }}>
-                        @else
-                            <span class="text-danger">Equipment tidak tersedia</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if ($booking->equipment)
-                            <input type="radio" name="checklist{{ $booking->equipment->id_equipment }}" value="0" {{ $booking->checklist == 0 ? 'checked' : '' }}>
-                        @else
-                            <span class="text-danger">Equipment tidak tersedia</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if ($booking->equipment)
-                            <input type="text" name="description{{ $booking->equipment->id_equipment }}" value="{{ $booking->description }}" class="form-control">
-                        @else
-                            <span class="text-danger">Equipment tidak tersedia</span>
-                        @endif
-                    </td>
+                    <th>Kelengkapan</th>
+                    <th>Masuk</th>
+                    <th>Keluar</th>
+                    <th>Std</th>
+                    <th>Keterangan</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($trsInspectionLists as $inspection)
+                    <tr>
+                        <td>
+                            <input type="hidden" name="id_equipment{{ $inspection->id_equipment }}" value="{{ $inspection->id_equipment }}">
+                            {{ $inspection->equipment->name }}
+                        </td>
+                        <td>
+                            <input type="radio" name="checklist{{ $inspection->equipment->id_equipment }}" value="1" {{ $inspection->checklist == 1 ? 'checked' : '' }}>
+                        </td>
+                        <td>
+                            <input type="radio" name="checklist{{ $inspection->equipment->id_equipment }}" value="0" {{ $inspection->checklist == 0 ? 'checked' : '' }}>
+                        </td>
+                        <td>
+                            {{ $inspection->equipment->std }}
+                        </td>
+                        <td>
+                            <input type="text" name="description{{ $inspection->equipment->id_equipment }}" value="{{ $inspection->description }}" class="form-control">
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
     
-    @if ($trsInspectionLists->isNotEmpty() && $trsInspectionLists->first()->idBookingNavigation && $trsInspectionLists->first()->idBookingNavigation->finish_estimation_time)
+    @if ($trsBooking->start_repair_time != NULL)
         <p>
-            Servis ini akan dimulai pada <b>{{ $trsInspectionLists->first()->idBookingNavigation->finish_estimation_time->format('d F Y - H:i') }}</b>.
+            Servis ini sudah dimulai pada <b>{{ $trsBooking->finish_estimation_time->format('d F Y - H:i') }}</b>.
         </p>
     @else
         <p>Servis ini akan dimulai pada <b>{{ $currentDatetime }}</b>. Apakah anda yakin?</p>
     @endif
     
     <div class="text-end">
-        @if (session('ErrorMessage'))
+        @if (!(($trsBooking->repair_status == "INSPECTION LIST" || $trsBooking->repair_status == "EKSEKUSI") || ($trsBooking->start_repair_time != null && $trsBooking->idVehicleNavigation->classify == "MOTOR")))
             <a href="{{ route('reparation.index', ['idBooking' => $idBooking]) }}" class="btn btn-outline-primary mb-4 ms-auto">
                 Kembali
             </a>

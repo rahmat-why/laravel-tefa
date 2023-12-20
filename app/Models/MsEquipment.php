@@ -18,7 +18,9 @@ class MsEquipment extends Model
     protected $fillable = [
         'id_equipment',
         'name',
-        'isActive',
+        'is_active',
+        'std',
+        'ordering',
     ];
 
     public function trsInspectionLists(): HasMany
