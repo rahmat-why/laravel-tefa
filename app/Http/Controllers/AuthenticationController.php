@@ -111,18 +111,17 @@ class AuthenticationController extends Controller
         // Compare OTP
         if ($otp != $request->password) {
             return redirect()->route('authentication.verification.form')
-                ->with('ErrorMessage', 'OTP tidak valid!')
-                ->with('email', $email);
+                ->with('ErrorMessage', 'OTP tidak valid!');
         }
-
-        // Remove the session after successful verification
-        session()->forget(['email', 'otp']);
-
+        
         // Retrieve customer
         $customer = MsCustomer::where('email', $email)->first();
 
         // Attempt to log in the user using the custom guard
         Auth::guard('ms_customers')->login($customer);
+
+        // Remove the session after successful verification
+        session()->forget(['email', 'otp']);
 
         // Redirect to the home page
         return redirect()->route('home.form');

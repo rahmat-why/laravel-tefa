@@ -51,9 +51,10 @@
                             <label for="police_number" class="control-label">Plat Nomor</label>
                             <input type="text" name="police_number" class="form-control" />
                             <div id="police_numberHelp" class="form-text">Contoh: B 1234 ABC</div>
+                            
                             @error('police_number')
                                 <span class="text-danger">{{ $message }}</span>
-                            @enderror                     
+                            @enderror
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <label for="color" class="control-label">Warna</label>

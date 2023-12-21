@@ -17,8 +17,8 @@ class BookingController extends Controller
         $bookings = TrsBooking::with(['idVehicleNavigation.idCustomerNavigation'])
             ->whereNotIn('repair_status', ['BATAL', 'SELESAI']);
 
-        if(auth()->user()->position != "SERVICE ADVISOR") {
-            $bookings->whereNotNull('service_advisor');
+        if(auth()->user()->position == "HEAD MECHANIC") {
+            $bookings->where("head_mechanic", auth()->user()->id_user);
         }
 
         $bookings = $bookings->orderBy('order_date', 'DESC')

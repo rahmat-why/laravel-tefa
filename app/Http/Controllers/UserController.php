@@ -42,7 +42,7 @@ class UserController extends Controller
         Auth::guard('ms_users')->logout();
 
         // Redirect to the login page or any other page as needed
-        return redirect()->route('user.logout.process');
+        return redirect()->route('user.login.form');
     }
 
     public function index()
@@ -167,7 +167,7 @@ class UserController extends Controller
         $user->save();
 
         // Menampilkan pesan sukses ke view
-        return redirect()->route('user.index')->with('successMessage', 'Data berhasil diubah!');
+        return redirect()->route('user.index')->with('successMessage', 'Data Pengguna berhasil diperbaharui!');
     }
 
     public function delete($id)
@@ -200,6 +200,6 @@ class UserController extends Controller
         }
 
         // Redirect ke halaman daftar pengguna setelah penghapusan
-        return redirect()->route('user.index')->with('successMessage', 'Pengguna berhasil dihapus!');
+        return redirect()->route('user.index')->with('successMessage', 'Data Pengguna berhasil dihapus!');
     }
 }

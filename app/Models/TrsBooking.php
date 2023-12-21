@@ -30,6 +30,7 @@ class TrsBooking extends Model
         'replacement_part',
         'evaluation',
         'price',
+        'working_cost',
         'created_time',
         'repair_status',
         'repair_method',

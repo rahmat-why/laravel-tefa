@@ -26,12 +26,40 @@ class ReparationController extends Controller
         return view('reparation.index', compact('booking'));
     }
 
-    public function postFormStartService(Request $request)
+    public function formStartService($idBooking)
     {
-        if(!in_array(auth()->user()->position, ["SERVICE ADVISOR"])) {
-            abort(403, 'Unauthorized.');
+        $booking = TrsBooking::find($idBooking);
+        $head_mechanic = MsUser::whereNotNull('password')
+            ->where('position', 'HEAD MECHANIC')
+            ->get();
+
+        if (!$booking) {          
+            abort(404, 'Not Found');
         }
         
+        if (!in_array($booking->repair_status, ['MENUNGGU','PERENCANAAN'])) {
+            session()->flash('ErrorMessage', 'Info Proyek harus dilakukan sebelum perencanaan!');
+        }
+
+        return view('booking.form_start_service', compact('booking', 'head_mechanic'));
+    }
+
+    public function postFormStartService(Request $request)
+    {
+        if (!in_array(auth()->user()->position, ["SERVICE ADVISOR"])) {
+            abort(403, 'Unauthorized.');
+        }
+
+        $validatedData = $request->validate([
+            'finish_estimation_time' => 'required|date|after:now',
+            'head_mechanic' => 'required',
+        ], [
+            'finish_estimation_time.required' => 'Kolom Estimasi Selesai harus diisi.',
+            'finish_estimation_time.date' => 'Kolom Estimasi Selesai harus berupa tanggal.',
+            'finish_estimation_time.after' => 'Estimasi selesai tidak boleh di atas waktu saat ini.',
+            'head_mechanic.required' => 'Kolom Head Mechanic harus diisi.',
+        ]);
+
         $id_booking = $request->input('idBooking');
         $booking = TrsBooking::find($id_booking);
 
@@ -39,8 +67,18 @@ class ReparationController extends Controller
             abort(404, 'Booking not found');
         }
 
+        $head_mechanic_name = $request->input('head_mechanic');
+        $head_mechanic = MsUser::where('id_user', $head_mechanic_name)->first();
+        $finishEstimationTime = $request->input('finish_estimation_time');
+
+        if (!$head_mechanic) {
+            abort(404, 'Head Mechanic not found');
+        }
+
         $booking->repair_status = 'PERENCANAAN';
         $booking->service_advisor = auth()->user()->id_user;
+        $booking->head_mechanic = $head_mechanic->id_user;
+        $booking->finish_estimation_time = $finishEstimationTime;
         $booking->save();
 
         session()->flash('successMessage', 'Servis berhasil dimulai!');
@@ -75,16 +113,16 @@ class ReparationController extends Controller
             'repair_description' => 'required|string',
             'replacement_part' => 'nullable',
             'price' => 'required|numeric|min:0',
-            'finish_estimation_time' => 'required|date|after:now',
+            'working_cost' => 'required|numeric|min:0',          
         ], [
             'repair_description.required' => 'Kolom Deskripsi Perbaikan harus diisi.', 
             'replacement_part.required' => 'Kolom Ganti Part harus diisi.',
             'price.required' => 'Kolom Harga harus diisi minimal 0.',
             'price.numeric' => 'Kolom Harga harus berupa angka.',
             'price.min' => 'Kolom Harga tidak boleh kurang dari 0.',
-            'finish_estimation_time.required' => 'Kolom Estimasi Selesai harus diisi.',
-            'finish_estimation_time.date' => 'Kolom Estimasi Selesai harus berupa tanggal.',
-            'finish_estimation_time.after' => 'Estimasi selesai tidak boleh sebelum waktu saat ini.',           
+            'working_cost.required' => 'Kolom Biaya Jasa harus diisi minimal 0.',
+            'working_cost.numeric' => 'Kolom Biaya Jasa harus berupa angka.',
+            'working_cost.min' => 'Kolom Biaya Jasa tidak boleh kurang dari 0.',          
         ]);
 
         $booking = TrsBooking::find($request->id_booking);
@@ -102,7 +140,7 @@ class ReparationController extends Controller
             'repair_description' => $validatedData['repair_description'],
             'replacement_part' => $validatedData['replacement_part'],
             'price' => $validatedData['price'],
-            'finish_estimation_time' => $validatedData['finish_estimation_time'],
+            'working_cost' => $validatedData['working_cost'],
             'repair_status' => 'KEPUTUSAN',
             'progress' => 10,
             'head_mechanic' => auth()->user()->id_user,
@@ -399,5 +437,5 @@ class ReparationController extends Controller
         session()->flash('SuccessMessage', 'Temuan berhasil disimpan!');
         
         return redirect()->route('reparation.index', ['idBooking' => $booking->id_booking]);
-    }
+    }  
 }

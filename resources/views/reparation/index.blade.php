@@ -66,14 +66,20 @@
 
 <div class="row">
     <div class="col-sm-6 col-xl-2">
-        <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #5296D6; position: relative;">
-            <h6 class="text-white">INFO PROYEK</h6>
-            <i class="ti ti-circle-check text-primary position-absolute" style="top: 5px; right: 5px;"></i>
-        </div>
+        <a href="{{ route('reparation.form-start-service', ['idBooking' => $booking->id_booking]) }}" class="position-relative">
+            <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #304F6C; position: relative;">
+                <h6 class="text-white">INFO PROYEK</h6>
+                @if ($booking->finish_estimation_time == null)
+                    <i class="ti ti-loader text-warning position-absolute" style="top: 5px; right: 5px;"></i>
+                @else
+                    <i class="ti ti-circle-check text-primary position-absolute" style="top: 5px; right: 5px;"></i>
+                @endif
+            </div>
+        </a>
     </div>
     <div class="col-sm-6 col-xl-2">
         <a href="{{ route('reparation.form-plan', ['idBooking' => $booking->id_booking]) }}" class="position-relative">
-            <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #304F6C; position: relative;">
+            <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #5296D6; position: relative;">
                 <h6 class="text-white">PERENCANAAN</h6>
                 @if ($booking->repair_description == null)
                     <i class="ti ti-loader text-warning position-absolute" style="top: 5px; right: 5px;"></i>
@@ -85,7 +91,7 @@
     </div>
     <div class="col-sm-6 col-xl-2">
         <a href="{{ route('reparation.form-decision', ['idBooking' => $booking->id_booking]) }}" class="position-relative">
-            <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #5296D6; position: relative;">
+            <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #304F6C; position: relative;">
                 <h6 class="text-white">KEPUTUSAN</h6>
                 @if ($booking->decision != null)
                     <i class="ti ti-circle-check text-primary position-absolute" style="top: 5px; right: 5px;"></i>
@@ -98,7 +104,7 @@
     <div class="col-sm-6 col-xl-2">
         @if ($booking->end_repair_time != null)
             <a href="{{ route('reparation.form-finish-execution', ['idBooking' => $booking->id_booking]) }}" class="position-relative">
-                <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #304F6C; position: relative;">
+                <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #5296D6; position: relative;">
                     <h6 class="text-white">EKSEKUSI</h6>
                     <p class="text-white" style="font-size: 12px">Selesai</p>
                     <i class="ti ti-circle-check text-primary position-absolute" style="top: 5px; right: 5px;"></i>
@@ -106,7 +112,7 @@
             </a>
         @elseif ($booking->start_repair_time != null)
             <a href="{{ route('reparation.form-finish-execution', ['idBooking' => $booking->id_booking]) }}" class="position-relative">
-                <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #304F6C; position: relative;">
+                <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #5296D6; position: relative;">
                     <h6 class="text-white">EKSEKUSI</h6>
                     <p class="text-white" style="font-size: 12px">Sedang Berlangsung</p>
                     <i class="ti ti-loader text-warning position-absolute" style="top: 5px; right: 5px;"></i>
@@ -114,7 +120,7 @@
             </a>
         @else
             <a href="{{ route('inspection_list.index', ['idBooking' => $booking->id_booking]) }}" class="position-relative">
-                <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #304F6C; position: relative;">
+                <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #5296D6; position: relative;">
                     <h6 class="text-white">EKSEKUSI</h6>
                     <p class="text-white" style="font-size: 12px">Belum Dimulai</p>
                     <i class="ti ti-loader text-warning position-absolute" style="top: 5px; right: 5px;"></i>
@@ -124,7 +130,7 @@
     </div>
     <div class="col-sm-6 col-xl-2">
         <a href="{{ route('reparation.form-control', ['idBooking' => $booking->id_booking]) }}" class="position-relative">
-            <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #5296D6; position: relative;">
+            <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #304F6C; position: relative;">
                 <h6 class="text-white">KONTROL</h6>
                 @if ($booking->control == null || $booking->control == 0)
                     <i class="ti ti-loader text-warning position-absolute" style="top: 5px; right: 5px;"></i>
@@ -136,7 +142,7 @@
     </div>
     <div class="col-sm-6 col-xl-2">
         <a href="{{ route('reparation.form-evaluation', ['idBooking' => $booking->id_booking]) }}" class="position-relative">
-            <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #304F6C; position: relative;">
+            <div class="d-flex flex-column align-items-center justify-content-center rounded-circle text-center" style="width: 125px; height: 125px; background-color: #5296D6; position: relative;">
                 <h6 class="text-white">EVALUASI</h6>
                 @if ($booking->evaluation == null)
                     <i class="ti ti-loader text-warning position-absolute" style="top: 5px; right: 5px;"></i>

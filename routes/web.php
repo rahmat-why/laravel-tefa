@@ -23,7 +23,7 @@ use App\Http\Controllers\InspectionListController;
 |
 */
 
-Route::prefix('')->group(function () {
+Route::group(['middleware' => ['web']], function () { 
     Route::get('/authentication/login', [AuthenticationController::class, 'login'])->name('authentication.login.form');
     Route::post('/authentication/process-login', [AuthenticationController::class, 'processLogin'])->name('authentication.login.process');
     Route::get('/authentication/register', [AuthenticationController::class, 'register'])->name('authentication.register.form');
@@ -33,10 +33,11 @@ Route::prefix('')->group(function () {
     Route::get('/authentication/process-logout', [AuthenticationController::class, 'processLogout'])->name('authentication.logout.process');
     Route::get('/user/login', [UserController::class, 'login'])->name('user.login.form');
     Route::post('/user/process-login', [UserController::class, 'processLogin'])->name('user.login.process');
+    Route::get('/user/process-logout', [UserController::class, 'processLogout'])->name('user.logout.process');
 });
 
 Route::middleware('auth:ms_users')->group(function () {
-    Route::get('/user/process-logout', [UserController::class, 'processLogout'])->name('user.logout.process');
+   
     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/user/process-create', [UserController::class, 'processCreate'])->name('user.create.process');
     Route::get('/user/index', [UserController::class, 'index'])->name('user.index');
@@ -111,6 +112,7 @@ Route::middleware('auth:ms_users')->group(function () {
     Route::post('reparation/post-form-evaluation', [ReparationController::class, 'postFormEvaluation'])->name('reparation.post-form-evaluation');
     Route::get('reparation/form-special-handling/{idBooking}', [ReparationController::class, 'formSpecialHandling'])->name('reparation.form-special-handling');
     Route::post('reparation/post-form-special-handling', [ReparationController::class, 'postFormSpecialHandling'])->name('reparation.post-form-special-handling');
+    Route::get('/reparation/form-start-service/{idBooking}', [ReparationController::class, 'formStartService'])->name('reparation.form-start-service');
     Route::post('reparation/post-form-start-service', [ReparationController::class, 'postFormStartService'])->name('reparation.post-form-start-service');
 });
 

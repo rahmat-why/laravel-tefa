@@ -14,6 +14,12 @@
                         <li class="breadcrumb-item">Data Kendaraan</li>
                     </ol>
                 </nav>
+                @if (session('successMessage'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('successMessage') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <p>
                     <a href="{{ route('Vehicle.Create') }}" class="btn btn-primary m-1">Tambah Kendaraan</a>
                 </p>

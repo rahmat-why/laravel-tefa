@@ -8,9 +8,9 @@
     <a href="{{ route('user.create') }}">Tambah Akun</a>
 </p>
 
-@if (session('SuccessMessage'))
+@if (session('successMessage'))
     <div class="alert alert-success" role="alert">
-        {{ session('SuccessMessage') }}
+        {{ session('successMessage') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif

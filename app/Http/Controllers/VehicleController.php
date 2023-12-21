@@ -47,10 +47,12 @@ class VehicleController extends Controller
         $request->validate([
             'type' => 'required|regex:/^[A-Za-z0-9 ]+$/',
             'classify' => 'required|regex:/^[A-Za-z0-9]+$/',
-            'police_number' => 'required|regex:/^[A-Za-z0-9 ]+$/',
+            'police_number' => 'required|regex:/^[A-Za-z0-9 ]+$/|unique:ms_vehicles,police_number',
             'color' => 'required|regex:/^[A-Za-z ]+$/',
             'year' => 'required|numeric',
             'vehicle_owner' => 'required|regex:/^[A-Za-z ]+$/',
+            'chassis_number' => 'required|regex:/^[A-Za-z0-9]+$/',
+            'machine_number' => 'required|regex:/^[A-Za-z0-9]+$/',
         ], [
             'type.required' => 'Tipe wajib diisi.',
             'type.regex' => 'Tipe harus mengandung huruf, angka, dan spasi saja.',
@@ -58,13 +60,24 @@ class VehicleController extends Controller
             'classify.regex' => 'Klasifikasi harus mengandung huruf dan angka saja.',
             'police_number.required' => 'Nomor Polisi wajib diisi.',
             'police_number.regex' => 'Nomor Polisi harus mengandung huruf dan angka saja.',
+            'police_number.unique' => 'Nomor Polisi sudah digunakan.',
             'color.required' => 'Warna wajib diisi.',
             'color.regex' => 'Warna harus mengandung huruf dan spasi saja.',
             'year.required' => 'Tahun wajib diisi.',
             'year.numeric' => 'Tahun harus mengandung angka saja.',
             'vehicle_owner.required' => 'Pemilik Kendaraan wajib diisi.',
             'vehicle_owner.regex' => 'Pemilik Kendaraan harus mengandung huruf dan spasi saja.',
-        ]);
+            'chassis_number.required' => 'No. Rangka wajib diisi.',
+            'chassis_number.regex' => 'No. Rangka harus mengandung huruf dan angka saja.',
+            'machine_number.required' => 'No. Mesin wajib diisi.',
+            'machine_number.regex' => 'No. Mesin harus mengandung huruf dan angka saja.',
+        ]);        
+
+         // Pemeriksaan apakah nomor polisi sudah digunakan
+        $existingVehicle = MsVehicle::where('police_number', $request->input('police_number'))->first();
+        if ($existingVehicle) {
+            return redirect()->route('Vehicle.Index')->with('errorMessage', 'Nomor Polisi sudah digunakan!');
+        }
     
         // Automatically assign id_customer based on the authenticated user
         $request->merge(['id_customer' => auth()->user()->id_customer]);
@@ -123,6 +136,8 @@ class VehicleController extends Controller
             'color' => 'required|regex:/^[A-Za-z ]+$/',
             'year' => 'required|numeric',
             'vehicle_owner' => 'required|regex:/^[A-Za-z ]+$/',
+            'chassis_number' => 'required|regex:/^[A-Za-z0-9]+$/',
+            'machine_number' => 'required|regex:/^[A-Za-z0-9]+$/',
         ], [
             'type.required' => 'Tipe wajib diisi.',
             'type.regex' => 'Tipe harus mengandung huruf, angka, dan spasi saja.',
@@ -136,19 +151,23 @@ class VehicleController extends Controller
             'year.numeric' => 'Tahun harus mengandung angka saja.',
             'vehicle_owner.required' => 'Pemilik Kendaraan wajib diisi.',
             'vehicle_owner.regex' => 'Pemilik Kendaraan harus mengandung huruf dan spasi saja.',
+            'chassis_number.required' => 'No. Rangka wajib diisi.',
+            'chassis_number.regex' => 'No. Rangka harus mengandung huruf dan angka saja.',
+            'machine_number.required' => 'No. Mesin wajib diisi.',
+            'machine_number.regex' => 'No. Mesin harus mengandung huruf dan angka saja.',
         ]);
         // Ambil data yang diterima dari formulir
         $data = $request->all();
     
         // Ambil data kendaraan berdasarkan $id_vehicle
         $vehicle = MsVehicle::findOrFail($id_vehicle);
-    
+     
         // Pastikan id_vehicle dan id_customer tidak dapat diubah
         $data['id_vehicle'] = $vehicle->id_vehicle;
         $data['id_customer'] = $vehicle->id_customer;
     
-            $vehicle->update($data);
-            return redirect(route('Vehicle.Index'))->with('successMessage', 'Kendaraan berhasil diperbaharui!');
+        $vehicle->update($data);
+        return redirect(route('Vehicle.Index'))->with('successMessage', 'Kendaraan berhasil diperbaharui!');
     }
 
     /**

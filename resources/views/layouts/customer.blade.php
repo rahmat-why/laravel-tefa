@@ -3,7 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') - TEFA</title>
+    <title>
+        @if (!in_array(request()->route()->getName(), ['login', 'register', 'verification'])) 
+            @yield('title') - TEFA
+        @else 
+            TEFA
+        @endif
+    </title>
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/logos/logo-favicon.png') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}" />
@@ -22,6 +28,11 @@
     }
 </style>
 
+@php
+    $currentRouteName = request()->route()->getName();
+@endphp
+
+@if(!in_array($currentRouteName, ["authentication.login.form", "authentication.register.form", "authentication.verification.form"]))
 <nav class="navbar navbar-expand-lg" style="background-color: #ffffff;">
     <div class="container d-flex justify-content-between align-items-center">
         <div class="text-left">
@@ -30,6 +41,7 @@
         </div>
     </div>
 </nav>
+@endif
 
 <div class="container-fluid">
     @yield('content')

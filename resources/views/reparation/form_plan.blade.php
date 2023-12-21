@@ -42,13 +42,18 @@
         @enderror
     </div>
     <div class="mb-3">
-        <label for="finish_estimation_time">Estimasi Selesai:</label>
-        <input type="datetime-local" name="finish_estimation_time" class="form-control" value="{{ $booking->finish_estimation_time }}" />
-        @error('finish_estimation_time')
+        <label for="working_cost">Biaya Jasa:</label>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="service-fee-addon">Rp.</span>
+            </div>
+            <input type="text" name="working_cost" value="{{ old('working_cost', str_replace(',', '', number_format($booking->working_cost))) }}" class="form-control" aria-describedby="working-cost-addon">
+        </div>
+        @error('working_cost')
             <span class="text-danger">{{ $message }}</span>
         @enderror
     </div>
-    
+
     <div class="text-end">
         @if (!in_array($booking->repair_status, ['PERENCANAAN', 'KEPUTUSAN']))
             <a href="{{ route('reparation.index', ['idBooking' => $booking->id_booking]) }}" class="btn btn-outline-primary mb-4 ms-auto">

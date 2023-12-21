@@ -8,7 +8,7 @@
     <div class="d-flex align-items-center justify-content-center w-100">
         <div class="row justify-content-center w-100">
             <div class="card-body">
-                <nav aria-label="breadcrumb" class="bg-light p-3 mt-2">
+                <nav ariAa-label="breadcrumb" class="bg-light p-3 mt-2">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="{{ route('home.form') }}">Beranda</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('Vehicle.Index') }}">Data Kendaraan</a></li>

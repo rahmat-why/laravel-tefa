@@ -31,7 +31,7 @@
             }
         @endphp
         
-        <tr style = "{{ $background_color }}">
+        <tr style="{{ $background_color }}">
             <td>
                 {{ optional(optional($booking->idVehicleNavigation)->idCustomerNavigation)->name ?? 'N/A' }}
                 <a class="btn btn-outline-success btn-sm"
@@ -46,7 +46,7 @@
             <td>
                 {{ optional(optional($booking->idVehicleNavigation))->type ?? 'N/A' }}
                 <a class="btn btn-outline-primary btn-sm" href="{{ route('vehicles.history', ['id' => $booking->id_vehicle]) }}" data-toggle="tooltip" data-placement="top" title="Lihat riwayat kendaraan">
-                    <i class="ti ti-history"></i>
+                    <i class="ti ti-hipstory"></i>
                 </a>
             </td>
             <td>{{ optional(optional($booking->idVehicleNavigation))->police_number ?? 'N/A' }}</td>
@@ -54,17 +54,15 @@
             <td>{{ $booking->complaint }}</td>
             <td>{{ $booking->repair_status }}</td>
             <td>
-            @if($booking->repair_status == "MENUNGGU")
-                <form method="post" action="{{ route('reparation.post-form-start-service') }}" onsubmit="return confirm('Apakah anda yakin untuk memulai servis ini?');">
-                    @csrf
-                    <input type="hidden" name="idBooking" value="{{$booking->id_booking}}">
-                    <input type="submit" value="{{ $booking->repair_method }}" style="background: none; border: none; color: blue; cursor: pointer; text-decoration: none;">
-                </form>
-            @else
-                <a href="{{ route('reparation.index', ['idBooking' => $booking->id_booking]) }}">
-                    {{ $booking->repair_method }}
-                </a>
-            @endif
+                @if($booking->repair_status == "MENUNGGU")
+                    <a href="{{ route('reparation.form-start-service', ['idBooking' => $booking->id_booking]) }}" style="color: blue; text-decoration: none;">
+                        {{ $booking->repair_method }}
+                    </a>
+                @else
+                    <a href="{{ route('reparation.index', ['idBooking' => $booking->id_booking]) }}">
+                        {{ $booking->repair_method }}
+                    </a>
+                @endif
             </td>
         </tr>
     @endforeach
