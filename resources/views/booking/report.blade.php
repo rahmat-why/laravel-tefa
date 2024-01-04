@@ -70,7 +70,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
+    
+    <b>Trend Harian</b>
+    <div id="chart"></div>
 
+    <b>Rincian</b>
     <table class="table">
         <thead>
             <tr>
@@ -133,6 +137,8 @@
         </tbody>
     </table>
 
+    <script src="{{ asset('assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+
     <script>
         function filterData() {
             var month = document.getElementById("month").value;
@@ -143,6 +149,108 @@
             var month = document.getElementById("month").value;
             window.location.href = '/booking/export?month=' + month;
         }
+
+        function showReportDaily() {
+            var chart = {
+                series: [
+                    { name: "Total TEFA:", data: {!! json_encode($data_tefa) !!} },
+                    { name: "Total FASTTRACK", data: {!! json_encode($data_fasttrack) !!} },
+                ],
+
+                chart: {
+                    type: "bar",
+                    height: 345,
+                    offsetX: -15,
+                    toolbar: { show: true },
+                    foreColor: "#adb0bb",
+                    fontFamily: 'inherit',
+                    sparkline: { enabled: false },
+                },
+
+
+                colors: ["#5D87FF", "#49BEFF"],
+
+
+                plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: "35%",
+                    borderRadius: [6],
+                    borderRadiusApplication: 'end',
+                    borderRadiusWhenStacked: 'all'
+                },
+                },
+                markers: { size: 0 },
+
+                dataLabels: {
+                    enabled: false,
+                },
+
+
+                legend: {
+                    show: false,
+                },
+
+
+                grid: {
+                borderColor: "rgba(0,0,0,0.1)",
+                strokeDashArray: 3,
+                xaxis: {
+                    lines: {
+                        show: false,
+                    },
+                },
+                },
+
+                xaxis: {
+                type: "category",
+                categories: {!! json_encode($data_orderdate) !!},
+                    labels: {
+                        style: { cssClass: "grey--text lighten-2--text fill-color" },
+                    },
+                },
+
+
+                yaxis: {
+                    show: true,
+                    min: 0,
+                    max: 10,
+                    tickAmount: 4,
+                    labels: {
+                        style: {
+                            cssClass: "grey--text lighten-2--text fill-color",
+                        },
+                    },
+                },
+                stroke: {
+                    show: true,
+                    width: 3,
+                    lineCap: "butt",
+                    colors: ["transparent"],
+                },
+
+
+                tooltip: { theme: "light" },
+
+                responsive: [
+                    {
+                        breakpoint: 600,
+                        options: {
+                        plotOptions: {
+                            bar: {
+                            borderRadius: 3,
+                            }
+                        },
+                        }
+                    }
+                ]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart"), chart);
+            chart.render();
+        }
+
+        showReportDaily();
     </script>
 @endsection
 

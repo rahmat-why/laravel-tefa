@@ -185,8 +185,35 @@ class BookingController extends Controller
         $countBatal = TrsBooking::where('repair_status', 'BATAL')
             ->whereMonth('order_date', Carbon::parse($month)->month)
             ->count();
+            
+        $daily_report = TrsBooking::selectRaw("
+                SUM(CASE WHEN repair_method = 'TEFA' THEN 1 ELSE 0 END) as count_tefa,
+                SUM(CASE WHEN repair_method = 'FAST TRACK' THEN 1 ELSE 0 END) as count_fasttrack,
+                order_date
+            ")
+            ->whereIn('repair_status', ['SELESAI', 'BATAL'])
+            ->whereMonth('order_date', Carbon::parse($month)->month)
+            ->groupBy('order_date')
+            ->get();
+        
+        // Initialize empty arrays
+        $data_tefa = [];
+        $data_fasttrack = [];
+        $data_orderdate = [];
+        
+        // Populate arrays based on $daily_report results
+        foreach ($daily_report as $daily) {
+            // Assuming $report->total_booking represents the data you want to use
+            $data_tefa[] = $daily->count_tefa;
+        
+            // Assuming $report->repair_method represents the data for fasttrack
+            $data_fasttrack[] = $daily->count_fasttrack;
+        
+            // Assuming $report->order_date is in the format "d/m"
+            $data_orderdate[] = $daily->order_date->format('d F Y');
+        }
 
-        return view('booking.report', compact('report', 'countTefa', 'countService', 'countBatal', 'month'));
+        return view('booking.report', compact('report', 'countTefa', 'countService', 'countBatal', 'month', 'data_tefa', 'data_fasttrack', 'data_orderdate'));
     }
  
     public function export(Request $request)
