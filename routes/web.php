@@ -80,12 +80,12 @@ Route::middleware('auth:ms_users')->group(function () {
     Route::get('/booking/progres', [BookingController::class, 'progress'])->name('booking.progres.form');
     Route::get('/booking/report', [BookingController::class, 'report'])->name('booking.report.form');
 
-    //report excel/pdf
-    Route::get('/booking/{id}/pdf', [BookingController::class, 'pdf'])->name('booking.invoice');
-
-    Route::get('/booking/export', [BookingController::class, 'export'])->name('booking.export');///pdffffffffffffffffffffffffff
-    Route::get('/booking/pdf', [BookingController::class, 'dowload_pdf'])->name('booking.pdf');
 });
+
+//report excel/pdf
+Route::get('/booking/{id}/pdf', [BookingController::class, 'pdf'])->name('booking.invoice');
+
+Route::get('/booking/export', [BookingController::class, 'export'])->name('booking.export');
 
 //Pending
 Route::middleware('auth:ms_users')->group(function () {

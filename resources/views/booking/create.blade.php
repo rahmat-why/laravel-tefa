@@ -30,17 +30,14 @@
                     @csrf
                     <div class="row g-3">
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">Tanggal Booking</label>
+                            <label class="form-label">Tanggal Booking</label>@error('order_date')<span class="text-danger">{{ $message }}</span>@enderror
                             <input name="order_date" class="form-control" type="date">
-                            <div id="orderDateHelp" class="form-text">Tanggal yang valid minimum H+1</div>
-                            @error('order_date')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                           <div id="orderDateHelp" class="form-text">Tanggal yang valid minimum H+1</div>
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <label for="id_vehicle">Kendaraan</label>
-                            <select name="id_vehicle" class="form-control" required>
+                            <select name="id_vehicle" class="form-control">
                                 @foreach ($vehicles as $vehicle)
                                     <option value="{{ $vehicle->id_vehicle }}">{{ $vehicle->type }}</option>
                                 @endforeach
@@ -48,26 +45,20 @@
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">Odometer (km)</label>
-                            <input name="odometer" class="form-control" required>
+                            <label class="form-label">Odometer (km)</label>@error('odometer')<span class="text-danger">{{ $message }}</span>@enderror
+                            <input name="odometer" class="form-control">
                             <span class="text-danger"></span>
-                            @error('odometer')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">Keluhan</label>
-                            <textarea class="form-control" name="complaint" aria-describedby="addressHelp" required></textarea>
+                            <label class="form-label">Keluhan</label>@error('complaint')<span class="text-danger">{{ $message }}</span>@enderror
+                            <textarea class="form-control" name="complaint" aria-describedby="addressHelp"></textarea>
                             <span class="text-danger"></span>
-                            @error('complaint')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="form-check">
-                                <input type="checkbox" name="checklist" class="form-check-input" id="AgreeToTerms" required>
+                                <input type="checkbox" name="checklist" class="form-check-input" id="AgreeToTerms">
                                 <label class="form-check-label" for="AgreeToTerms">Spare part disiapkan atau dibeli oleh customer</label>
                             </div>
                         </div>

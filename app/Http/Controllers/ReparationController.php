@@ -54,10 +54,10 @@ class ReparationController extends Controller
             'finish_estimation_time' => 'required|date|after:now',
             'head_mechanic' => 'required',
         ], [
-            'finish_estimation_time.required' => 'Kolom Estimasi Selesai harus diisi.',
-            'finish_estimation_time.date' => 'Kolom Estimasi Selesai harus berupa tanggal.',
-            'finish_estimation_time.after' => 'Estimasi selesai tidak boleh di atas waktu saat ini.',
-            'head_mechanic.required' => 'Kolom Head Mechanic harus diisi.',
+            'finish_estimation_time.required' => ' harus diisi.',
+            'finish_estimation_time.date' => ' harus berupa tanggal.',
+            'finish_estimation_time.after' => ' tidak boleh di atas waktu saat ini.',
+            'head_mechanic.required' => ' harus diisi.',
         ]);
 
         $id_booking = $request->input('idBooking');
@@ -115,14 +115,14 @@ class ReparationController extends Controller
             'price' => 'required|numeric|min:0',
             'working_cost' => 'required|numeric|min:0',          
         ], [
-            'repair_description.required' => 'Kolom Deskripsi Perbaikan harus diisi.', 
-            'replacement_part.required' => 'Kolom Ganti Part harus diisi.',
-            'price.required' => 'Kolom Harga harus diisi minimal 0.',
-            'price.numeric' => 'Kolom Harga harus berupa angka.',
-            'price.min' => 'Kolom Harga tidak boleh kurang dari 0.',
-            'working_cost.required' => 'Kolom Biaya Jasa harus diisi minimal 0.',
-            'working_cost.numeric' => 'Kolom Biaya Jasa harus berupa angka.',
-            'working_cost.min' => 'Kolom Biaya Jasa tidak boleh kurang dari 0.',          
+            'repair_description.required' => ' harus diisi.', 
+            'replacement_part.required' => ' harus diisi.',
+            'price.required' => ' harus diisi minimal 0.',
+            'price.numeric' => ' harus berupa angka.',
+            'price.min' => ' tidak boleh kurang dari 0.',
+            'working_cost.required' => ' harus diisi minimal 0.',
+            'working_cost.numeric' => ' harus berupa angka.',
+            'working_cost.min' => ' tidak boleh kurang dari 0.',          
         ]);
 
         $booking = TrsBooking::find($request->id_booking);

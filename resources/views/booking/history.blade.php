@@ -46,7 +46,7 @@
             <td>
                 {{ optional(optional($booking->idVehicleNavigation))->type ?? 'N/A' }}
                 <a class="btn btn-outline-primary btn-sm" href="{{ route('vehicles.history', ['id' => $booking->id_vehicle]) }}" data-toggle="tooltip" data-placement="top" title="Lihat riwayat kendaraan">
-                    <i class="ti ti-hipstory"></i>
+                    <i class="ti ti-history"></i>
                 </a>
             </td>
             <td>{{ optional(optional($booking->idVehicleNavigation))->police_number ?? 'N/A' }}</td>

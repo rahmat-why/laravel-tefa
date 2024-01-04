@@ -52,12 +52,12 @@ class BookingController extends Controller
             'odometer' => 'required|numeric',
             'complaint' => 'required|regex:/^[A-Za-z0-9 ]+$/',
         ], [
-            'order_date.required' => 'Tanggal wajib diisi.',
-            'order_date.after_or_equal' => 'Tanggal pemesanan hanya boleh H+1',
-            'odometer.required' => 'Odometer wajib diisi.',
-            'odometer.numeric' => 'Odometer harus mengandung angka saja.',
-            'complaint.regex' => 'Keluhan harus mengandung huruf, angka, dan spasi saja.',
-            'complaint.required' => 'Keluhan wajib diisi.',
+            'order_date.required' => ' wajib diisi.',
+            'order_date.after_or_equal' => ' pemesanan hanya boleh H+1',
+            'odometer.required' => ' wajib diisi.',
+            '.numeric' => ' harus mengandung angka saja.',
+            'complaint.regex' => ' harus mengandung huruf, angka, dan spasi saja.',
+            'complaint.required' => ' wajib diisi.',
         ]);
 
         // Check maximum bookings per day
@@ -107,10 +107,10 @@ class BookingController extends Controller
             'odometer' => 'required|numeric',
             'complaint' => 'required|regex:/^[A-Za-z0-9 ]+$/',
         ], [
-            'odometer.required' => 'Odometer wajib diisi.',
-            'odometer.numeric' => 'Odometer harus mengandung angka saja.',
-            'complaint.regex' => 'Keluhan harus mengandung huruf, angka, dan spasi saja.',
-            'complaint.required' => 'Keluhan wajib diisi.',
+            'odometer.required' => ' wajib diisi.',
+            'odometer.numeric' => ' harus mengandung angka saja.',
+            'complaint.regex' => ' harus mengandung huruf, angka, dan spasi saja.',
+            'complaint.required' => ' wajib diisi.',
         ]);
 
         // Check maximum bookings per day

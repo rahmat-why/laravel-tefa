@@ -31,71 +31,47 @@
                     @method('post') <!-- Use post method for update -->
                     <div class="row g-3">
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">Type</label>
+                            <label class="form-label">Type</label>  @error('type')<span class="text-danger">{{ $message }}</span>@enderror
                             <input type="text" class="form-control" name="type" value="{{ $vehicle->type }}">
                             <div id="typeHelp" class="form-text">Contoh: Honda Beat 125</div>
-                            @error('type')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label for="classify" class="control-label">Jenis</label>
+                            <label for="classify" class="control-label">Jenis</label>@error('classify')<span class="text-danger">{{ $message }}</span>@enderror
                             <select name="classify" class="form-control">
                                 <option value="MOTOR" {{ $vehicle->classify === 'MOTOR' ? 'selected' : '' }}>Motor</option>
                                 <option value="MOBIL" {{ $vehicle->classify === 'MOBIL' ? 'selected' : '' }}>Mobil</option>
                             </select>
-                            @error('classify')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">Plat Nomor</label>
+                            <label class="form-label">Plat Nomor</label>@error('police_number')<span class="text-danger">{{ $message }}</span>@enderror
                             <input type="text" class="form-control" name="police_number" value="{{ $vehicle->police_number }}">
-                            @error('police_number')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">Warna</label>
+                            <label class="form-label">Warna</label>@error('color')<span class="text-danger">{{ $message }}</span>@enderror
                             <input type="text" class="form-control" name="color" value="{{ $vehicle->color }}">
-                            @error('color')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">Tahun</label>
+                            <label class="form-label">Tahun</label>@error('year')<span class="text-danger">{{ $message }}</span>@enderror
                             <input type="text" class="form-control" name="year" value="{{ $vehicle->year }}">
-                            @error('year')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">Nama Pemilik</label>
+                            <label class="form-label">Nama Pemilik</label>@error('vehicle_owner')<span class="text-danger">{{ $message }}</span>@enderror
                             <input type="text" class="form-control" name="vehicle_owner" value="{{ $vehicle->vehicle_owner }}">
-                            @error('vehicle_owner')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">No. Rangka</label>
+                            <label class="form-label">No. Rangka</label>@error('chassis_number')<span class="text-danger">{{ $message }}</span>@enderror
                             <input type="text" class="form-control" name="chassis_number" value="{{ $vehicle->chassis_number }}">
-                            @error('chassis_number')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label class="form-label">No. Mesin</label>
+                            <label class="form-label">No. Mesin</label> @error('machine_number')<span class="text-danger">{{ $message }}</span>@enderror
                             <input type="text" class="form-control" name="machine_number" value="{{ $vehicle->machine_number }}">
-                            @error('machine_number')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
                     </div>
                     <hr />

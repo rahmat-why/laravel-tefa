@@ -70,17 +70,17 @@ class UserController extends Controller
             'password' => 'required|string|regex:/^[a-zA-Z0-9]+$/',
             'position' => 'required|string',
         ], [
-            'full_name.required' => 'Nama lengkap wajib diisi.',
-            'full_name.regex' => 'Nama lengkap hanya boleh huruf dan spasi.',
-            'nim.required' => 'NIM wajib diisi.',
-            'nim.regex' => 'NIM harus terdiri dari 10 angka.',
-            'nim.unique' => 'NIM sudah digunakan.',
-            'username.required' => 'Username wajib diisi.',
-            'username.regex' => 'Username harus mengandung huruf dan angka.',
-            'username.unique' => 'Username sudah digunakan.',
-            'password.required' => 'Password wajib diisi.',
-            'password.regex' => 'Password harus mengandung huruf dan angka.',
-            'position.required' => 'Posisi wajib diisi.',
+            'full_name.required' => ' wajib diisi.',
+            'full_name.regex' => ' hanya boleh huruf dan spasi.',
+            'nim.required' => ' wajib diisi.',
+            'nim.regex' => ' harus terdiri dari 10 angka.',
+            'nim.unique' => ' sudah digunakan.',
+            'username.required' => ' wajib diisi.',
+            'username.regex' => ' harus mengandung huruf dan angka.',
+            'username.unique' => ' sudah digunakan.',
+            'password.required' => ' wajib diisi.',
+            'password.regex' => ' harus mengandung huruf dan angka.',
+            'position.required' => ' wajib diisi.',
         ]);
 
         // Generate ID user

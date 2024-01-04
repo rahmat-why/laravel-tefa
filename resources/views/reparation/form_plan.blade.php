@@ -15,43 +15,31 @@
     @csrf
     <input type="hidden" name="id_booking" value="{{ $booking['id_booking'] }}" />
     <div class="mb-3">
-        <label for="repair_description">Perbaikan : </label>
+        <label for="repair_description">Perbaikan : </label>@error('repair_description')<span class="text-danger">{{ $message }}</span>@enderror
         <textarea name="repair_description" class="form-control">{{ $booking['repair_description'] }}</textarea>
-        @error('repair_description')
-            <span class="text-danger">{{ $message }}</span>
-        @enderror
     </div>
     <div class="mb-3">
-        <label for="replacement_part">Ganti Part : </label>
+        <label for="replacement_part">Ganti Part : </label>@error('replacement_part')<span class="text-danger">{{ $message }}</span>@enderror
         <textarea name="replacement_part" class="form-control">{{ $booking['replacement_part'] }}</textarea>
         <small class="text-muted">Opsional: Anda dapat mengosongkan bagian ini jika tidak diperlukan.</small>
-        @error('replacement_part')
-            <span class="text-danger">{{ $message }}</span>
-        @enderror
     </div>
     <div class="mb-3">
-        <label for="price">Harga:</label>
+        <label for="price">Harga:</label>@error('price')<span class="text-danger">{{ $message }}</span>@enderror
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="price-addon">Rp.</span>
             </div>
             <input type="text" name="price" value="{{ old('price', str_replace(',', '', number_format($booking->price))) }}" class="form-control" aria-describedby="price-addon">
         </div>
-        @error('price')
-            <span class="text-danger">{{ $message }}</span>
-        @enderror
     </div>
     <div class="mb-3">
-        <label for="working_cost">Biaya Jasa:</label>
+        <label for="working_cost">Biaya Jasa:</label>@error('working_cost')<span class="text-danger">{{ $message }}</span>@enderror
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="service-fee-addon">Rp.</span>
             </div>
             <input type="text" name="working_cost" value="{{ old('working_cost', str_replace(',', '', number_format($booking->working_cost))) }}" class="form-control" aria-describedby="working-cost-addon">
         </div>
-        @error('working_cost')
-            <span class="text-danger">{{ $message }}</span>
-        @enderror
     </div>
 
     <div class="text-end">
